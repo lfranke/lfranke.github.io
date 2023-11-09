@@ -40,23 +40,21 @@
               <td style="padding:20px;width:100%;vertical-align:middle">
                 <h2>Research</h2>
                 <p>
-<!--
-TODO
-//-->
+                  Research interest in computer graphics, perceptual rendering, computer vision and machine learning. Currently primar focus in neural rendering and novel view synthesis. Representative papers are <span class="highlight">highlighted</span>.
                 </p>
               </td>
             </tr>
           </tbody></table>
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
-      <tr onmouseout="vet_stop()" onmouseover="vet_start()"  >
+      <tr onmouseout="vet_stop()" onmouseover="vet_start()"  bgcolor="#ffffd0">
         <td style="padding:20px;width:25%;vertical-align:bottom">
           <div class="one">
             <div class="two" id='vet_image'><video  width=100% height=100%  muted autoplay loop>
             <source src="images/vet_bicycle_rescaled.mp4" type="video/mp4" >
             Your browser does not support the video tag.
             </video></div>
-            <img style="vertical-align: bottom;" translate=12px src='images/vet_teaser_res.jpeg' width="160" height="160">
+            <img style="vertical-align: bottom;" translate=12px src='images/vet_teaser_res.jpeg' width="160" height="100">
           </div>
           <script type="text/javascript">
             function vet_start() {
@@ -79,13 +77,13 @@ TODO
           Matthias Innmann,
           Marc Stamminger
           <br>
-          <em>Siggraph Asia</em>, 2023 
+          <em>SIGGRAPH Asia</em>, 2023 
           <br>
           <a href="https://lfranke.github.io/vet">project page</a>
           /
-          <a href="https://youtu.be/adH6GyqC4Jk">video</a>
-          /
           <a href="http://arxiv.org/abs/2311.04634">arXiv</a>
+          /
+          <a href="https://youtu.be/adH6GyqC4Jk">video</a>
           /
           <a href="https://github.com/lfranke/VET">github</a>
           <p></p>
@@ -94,9 +92,207 @@ TODO
           </p>
         </td>
       </tr>
+
+
+      <tr onmouseout="inovis_stop()" onmouseover="inovis_start()"  bgcolor="#ffffd0">
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <div class="one">
+            <div class="two" id='inovis_image'><video  width=100% height=100%  muted autoplay loop>
+            <source src="images/inovis_teaser_vid.mp4" type="video/mp4" >
+            Your browser does not support the video tag.
+            </video></div>
+            <img style="vertical-align: bottom;" translate=12px src='images/inovis_teaser.jpg' width="160" height="100">
+          </div>
+          <script type="text/javascript">
+            function inovis_start() {
+              document.getElementById('inovis_image').style.opacity = "1";
+            }
+            function inovis_stop() {
+              document.getElementById('inovis_image').style.opacity = "0";
+            }
+            inovis_stop()
+          </script>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="">
+            <span class="papertitle">Inovis: Instant Novel View Synthesis</span>
+          </a>
+          <br>
+          Mathias Harrer*
+          <strong>Linus Franke*</strong>,
+          Laura Fink,
+          Marc Stamminger,
+          Tim Weyrich
+          <br>
+          <em>SIGGRAPH Asia</em>, 2023 
+          <br>
+          <a href="">project page (coming soon)</a>
+          <p></p>
+          <p>
+          Point-based novel view synthesis without preprocessing using neural image based rendering.
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom">
+          <img src='images/livenvs_teaser.jpg' width="160" height="100">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="">
+            <span class="papertitle">LiveNVS: Neural View Synthesis on Live RGB-D Streams</span>
+          </a>
+          <br>
+          Laura Fink, Darius Rückert, <strong>Linus Franke</strong>, Joachim Keinert, Marc Stamminger
+          <br>
+          <em>SIGGRAPH Asia</em>, 2023
+          <br>
+          <a href="">project page (coming soon)</a>
+          <p></p>
+          <p>Novel view synthesis on live RGB-D streams with live-feedback, robust to slam loop closures.</p>
+        </td>
+      </tr>
       
-      
+    
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom">
+          <img src='images/lf_proj_teaser.jpeg' width="160" height="100">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://dl.acm.org/doi/pdf/10.1145/3585498">
+            <span class="papertitle">Efficient Rendering for Light Field Displays using Tailored Projective Mappings</span>
+          </a>
+          <br>
+          Laura Fink, Svenja Strobel, <strong>Linus Franke</strong>, Marc Stamminger
+          <br>
+          <em>Proceedings of the ACM on Computer Graphics and Interactive Techniques</em>, 2023
+          <br>
+          <a href="https://dl.acm.org/doi/pdf/10.1145/3585498">paper</a>
+          /
+          <a href="https://youtu.be/ntYMnq3-VcA?feature=shared&t=24">presentation</a>          
+          /
+          <a href="https://github.com/lorafib/projs-for-lfd-rendering">github</a>
+          <p></p>
+          <p>Rendering only relevant fragments for parallax-based light field displays through device-tailored projection matrices.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0"> 
+          <img src='images/adop_teaser.jpg' width="160" height="110">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle" bgcolor="#ffffd0">
+          <a href="https://github.com/darglein/ADOP">
+            <span class="papertitle">ADOP: Approximate Differentiable One-pixel Point Rendering</span>
+          </a>
+          <br>
+          Darius Rückert, <strong>Linus Franke</strong>, Marc Stamminger
+          <br>
+          <em>SIGGRAPH</em>, 2022
+          <br>
+          <a href="https://arxiv.org/abs/2110.06635">paper</a>
+          /
+          <a href="https://youtu.be/WJRyu1JUtVw">video</a>
+          /
+          <a href="https://github.com/darglein/ADOP">github</a>
+          <p></p>
+
+          
+          <p></p>
+          <p>Point-based differentiable one-pixel point rendering for automatic scene calibration and high-quality novel view synthesis.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0">
+          <img src='images/tfov_teaser.jpg' width="160" height="100">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle"  bgcolor="#ffffd0">
+          <a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.14176">
+            <span class="papertitle">Time‐Warped Foveated Rendering for Virtual Reality Headsets</span>
+          </a>
+          <br>
+          <strong>Linus Franke</strong>, Laura Fink, Jana Martschinke, Kai Selgrad, Marc Stamminger
+          <br>
+          <em>Computer Graphics Forum (CGF)</em>, 2021
+          <br>
+          <em>Presented (virtually) at Eurographics Vienna 2021</em>
+          <br>
+          <a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.14176">paper</a>
+          /
+          <a href="https://youtu.be/tdrjMvAlZFc">presentation</a>
+
+          
+          <p></p>
+          <p>Foveated Rendering via temporal forward reprojection for fast, imperceptible VR rendering.</p>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0">
+          <img src='images/mltdof_teaser.jpeg' width="160" height="100">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle"  bgcolor="#ffffd0">
+          <a href="https://dl.acm.org/doi/10.1145/3203200">
+            <span class="papertitle"> Multi-Layer Depth of Field Rendering with Tiled Splatting </span>
+          </a>
+          <br>
+          <strong>Linus Franke</strong>, Nikolai Hofmann, Marc Stamminger, Kai Selgrad
+          <br>
+          <em>Proceedings of the ACM on Computer Graphics and Interactive Techniques</em>, 2018
+          <br>
+          <em>Presented at i3d Montreal 2018</em>
+          <br>
+          <a href="https://selgrad.org/publications/2018_i3d_FHSS.pdf">paper</a>
+          /
+          <a href="https://selgrad.org/publications/2018_i3d_FHSS_suppl.pdf">supplemental material</a>          
+          <p></p>
+          <p>A multi-layered depth of field method for solving partial occlusion in real-time rendering.</p>
+        </td>
+      </tr>
               
+      
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom">
+          <img src='images/lier_case_study_teaser.jpeg' width="160" height="110">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://selgrad.org/publications/2016_els_LFSS.pdf">
+            <span class="papertitle">A Case Study in Implementation-Space Exploration</span>
+          </a>
+          <br>
+          Alexander Lier, <strong>Linus Franke</strong>, Marc Stamminger, Kai Selgrad
+          <br>
+          <em>Proceedings of the 9th European Lisp Symposium on European Lisp Symposium</em>, 2016
+          <br>
+          <a href="https://selgrad.org/publications/2016_els_LFSS.pdf">paper</a>
+          <p></p>
+          <p>Exploration of generative programming for efficient CUDA kernels in depth of field rendering.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:bottom">
+          <img src='images/tdof_poster_teaser.jpeg' width="160" height="90">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://diglib.eg.org/handle/10.2312/egp20161056">
+            <span class="papertitle">Tiled Depth of Field Splatting</span>
+          </a>
+          <br>
+          Kai Selgrad, <strong>Linus Franke</strong>, Marc Stamminger
+          <br>
+          <em>Eurographics Posters</em>, 2016
+          <br>
+          <a href="https://diglib.eg.org/bitstream/handle/10.2312/egp20161056/039-040.pdf">paper</a>
+          /
+          <a href="https://diglib.eg.org/bitstream/handle/10.2312/egp20161056/poster-a4.pdf">poster</a>
+          <p></p>
+          <p>Single-layer tiled splatting for depth of field rendering.</p>
+        </td>
+      </tr>
+
             
           </tbody></table>
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
