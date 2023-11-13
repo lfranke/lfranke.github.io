@@ -40,7 +40,8 @@
               <td style="padding:20px;width:100%;vertical-align:middle">
                 <h2>Research</h2>
                 <p>
-                  Research interest in computer graphics, perceptual rendering, computer vision and machine learning. Currently primar focus in neural rendering and novel view synthesis. Representative papers are <span class="highlight">highlighted</span>.
+                  Research interest in computer graphics, perceptual rendering, computer vision and machine learning. Currently primar focus in neural rendering and novel view synthesis. Representative papers are <span class="highlight">highlighted</span>. (*) Denotes equal contribution.
+
                 </p>
               </td>
             </tr>
@@ -66,7 +67,7 @@
             vet_stop()
           </script>
         </td>
-        <td style="padding:20px;width:75%;vertical-align:middle">
+        <td style="padding:20px;width:75%;vertical-align:top">
           <a href="vet">
             <span class="papertitle">VET: Visual Error Tomography for Point Cloud Completion and High-Quality Neural Rendering</span>
           </a>
@@ -113,7 +114,7 @@
             inovis_stop()
           </script>
         </td>
-        <td style="padding:20px;width:75%;vertical-align:middle">
+        <td style="padding:20px;width:75%;vertical-align:top">
           <a href="">
             <span class="papertitle">Inovis: Instant Novel View Synthesis</span>
           </a>
@@ -129,13 +130,13 @@
           <a href="">project page (coming soon)</a>
           <p></p>
           <p>
-          Point-based novel view synthesis without preprocessing using neural image based rendering.
+          Point-based novel view synthesis without per scene preprocessing or training using neural image based rendering.
           </p>
         </td>
       </tr>
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom">
+        <td style="padding:20px;width:25%;vertical-align:top">
           <img src='images/livenvs_teaser.jpg' width="160" height="100">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle">
@@ -149,13 +150,13 @@
           <br>
           <a href="">project page (coming soon)</a>
           <p></p>
-          <p>Novel view synthesis on live RGB-D streams with live-feedback, robust to slam loop closures.</p>
+          <p>Novel view synthesis on live RGB-D streams with feedback during capturing, robust to slam loop closures.</p>
         </td>
       </tr>
       
     
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom">
+        <td style="padding:20px;width:25%;vertical-align:top">
           <img src='images/lf_proj_teaser.jpeg' width="160" height="100">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle">
@@ -178,10 +179,28 @@
       </tr>
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0"> 
-          <img src='images/adop_teaser.jpg' width="160" height="110">
-        </td>
-        <td style="padding:20px;width:75%;vertical-align:middle" bgcolor="#ffffd0">
+        
+
+        <tr onmouseout="adop_stop()" onmouseover="adop_start()"  bgcolor="#ffffd0">
+          <td style="padding:20px;width:25%;vertical-align:bottom">
+            <div class="one">
+              <div class="two" id='adop_image'><video  width=100% height=100%  muted autoplay loop>
+              <source src="images/adop_teaser.mp4" type="video/mp4" >
+              Your browser does not support the video tag.
+              </video></div>
+              <img style="vertical-align: bottom;" translate=12px src='images/adop_teaser.jpg' width="160" height="100">
+            </div>
+            <script type="text/javascript">
+              function adop_start() {
+                document.getElementById('adop_image').style.opacity = "1";
+              }
+              function adop_stop() {
+                document.getElementById('adop_image').style.opacity = "0";
+              }
+              adop_stop()
+            </script>
+          </td>
+          <td style="padding:20px;width:75%;vertical-align:top">
           <a href="https://github.com/darglein/ADOP">
             <span class="papertitle">ADOP: Approximate Differentiable One-pixel Point Rendering</span>
           </a>
@@ -204,7 +223,7 @@
       </tr>
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0">
+        <td style="padding:20px;width:25%;vertical-align:top"  bgcolor="#ffffd0">
           <img src='images/tfov_teaser.jpg' width="160" height="100">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle"  bgcolor="#ffffd0">
@@ -221,8 +240,8 @@
           <a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.14176">paper</a>
           /
           <a href="https://youtu.be/tdrjMvAlZFc">presentation</a>
-
-          
+          /
+          <a href="https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fcgf.14176&file=cgf14176-sup-0001-SuppMat.pdf">supplemental material</a>          
           <p></p>
           <p>Foveated Rendering via temporal forward reprojection for fast, imperceptible VR rendering.</p>
         </td>
@@ -230,7 +249,7 @@
 
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom"  bgcolor="#ffffd0">
+        <td style="padding:20px;width:25%;vertical-align:top"  bgcolor="#ffffd0">
           <img src='images/mltdof_teaser.jpeg' width="160" height="100">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle"  bgcolor="#ffffd0">
@@ -254,7 +273,7 @@
               
       
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom">
+        <td style="padding:20px;width:25%;vertical-align:top">
           <img src='images/lier_case_study_teaser.jpeg' width="160" height="110">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle">
@@ -273,7 +292,7 @@
       </tr>
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:bottom">
+        <td style="padding:20px;width:25%;vertical-align:top">
           <img src='images/tdof_poster_teaser.jpeg' width="160" height="90">
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle">
