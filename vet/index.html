@@ -41,7 +41,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
-    
+
     <script src="js/app.js"></script>
     <script src="js/video_comparison.js"></script>
 
@@ -66,7 +66,7 @@
         <br><br>
         <div class="row">
             <h2 class="col-md-12 text-center">
-                <b>VET</b>: Visual Error Tomography for Point Cloud Completion</br> and High-Quality Neural Rendering</br> 
+                <b>VET</b>: Visual Error Tomography for Point Cloud Completion</br> and High-Quality Neural Rendering</br>
                 <small>
                     Siggraph Asia 2023
                 </small>
@@ -75,12 +75,12 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <ul class="list-inline">
-                    <li>                        
+                    <li>
                         <a style="text-decoration:none" href="https://lfranke.github.io">
                             Linus Franke
                           </a>
-                        <br>FAU Erlangen-Nürnberg<br> &zwnj; 
-                        
+                        <br>FAU Erlangen-Nürnberg<br> &zwnj;
+
                     </li>
                     <li>
                         <a style="text-decoration:none" href="https://www.lgdv.tf.fau.de/person/darius-rueckert/">
@@ -102,14 +102,14 @@
                             Matthias Innmann
                         </a>
                         <br>NavVis GmbH
-                        <br>  &zwnj; 
+                        <br>  &zwnj;
                     </li>
                     <li>
                         <a style="text-decoration:none" href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">
-                            Marc Stamminger                          
+                            Marc Stamminger
                         </a>
                         <br>FAU Erlangen-Nürnberg
-                        <br>  &zwnj; 
+                        <br>  &zwnj;
                     </li>
                 </ul>
             </div>
@@ -159,7 +159,7 @@
                 </h3>
                 <p class="text-justify">
                     In the last few years, deep neural networks opened the doors for big advances in novel view synthesis. Many of these approaches are based on a (coarse) proxy geometry obtained by structure from motion algorithms. Small deficiencies in this proxy can be fixed by neural rendering, but larger holes or missing parts, as they commonly appear for thin structures or for glossy regions, still lead to distracting artifacts and temporal instability. In this paper, we present a novel neural-rendering-based approach to detect and fix such deficiencies. As a proxy, we use a point cloud, which allows us to easily remove outlier geometry and to fill in missing geometry without complicated topological operations.
-                    
+
                     <br>Keys to our approach are (i) a differentiable, blending point-based renderer that can blend out redundant points, as well as (ii) the concept of <i>Visual Error Tomography</i> (VET), which allows us to lift 2D error maps to identify 3D-regions lacking geometry and to spawn novel points accordingly. Furthermore, (iii) by adding points as nested environment maps, our approach allows us to generate high-quality renderings of the surroundings in the same pipeline. In our results, we show that our approach can improve the quality of a point cloud obtained by structure from motion and thus increase novel view synthesis quality significantly. In contrast to point growing techniques, the approach can also fix large-scale holes and missing thin structures effectively. Rendering quality outperforms state-of-the-art methods and temporal stability is significantly improved, while rendering is possible at real-time frame rates.                </p>
             </div>
         </div>
@@ -184,15 +184,18 @@
                 <h3>
                     Pipeline
                 </h3>
-                Overview of our neural rendering pipeline with visual error tomography. 
+                Overview of our neural rendering pipeline with visual error tomography.
                 <br>
                 <br>
                 <img src="img/pipeline_rs.jpg" style="width:100%">
                 <p class="text-justify">
-                    <br>
-
-                    Point descriptors, positions and opacities are optimized via backpropagation, which automatically removes outliers during training. After initial convergence, our VET is used to predict missing 3D points from the error images. Following, the optimization is resumed until the next convergence. This process is repeated 1-3 times depending on scene complexity.        </p>
-
+                <br>
+                Figure 1: Point descriptors, positions and opacities are optimized via backpropagation, which automatically removes outliers during training. After initial convergence, our VET is used to predict missing 3D points from the error images. Following, the optimization is resumed until the next convergence. This process is repeated 1-3 times depending on scene complexity.        </p>
+                <br>
+                <img src="img/pipeline_ct.jpg" style="width:100%">
+                <p class="text-justify">
+                <br>
+                Figure 2: Visual Error Tomography: starting from error images <i>(left)</i>, we apply computed tomography to reconstruct a 3D error volume grid <i>(center)</i>. Within each voxels, random points are spawned, where the number of spawned points depends on the voxel's error value <i>(right)</i>.
             </div>
         </div>
         <br>
@@ -300,12 +303,11 @@
                 <h3>
                     Citation
                 </h3>
-                <div class="form-group col-md-10 col-md-offset-1">
+                <div class="form-group col-md-12 col-md-offset-0">
                     <textarea id="bibtex" class="form-control" readonly>
 @article{franke2023vet,
     title={VET: Visual Error Tomography for Point Cloud Completion and High-Quality Neural Rendering},
-    author={Linus Franke and Darius R{\"u}ckert and 
-            Laura Fink and Matthias Innmann and Marc Stamminger},
+    author={Linus Franke and Darius R{\"u}ckert and Laura Fink and Matthias Innmann and Marc Stamminger},
     booktitle = {ACM SIGGRAPH Asia 2023 Conference Proceedings},
     year = {2023}
 }</textarea>
@@ -340,18 +342,17 @@
             </h3>
     <div class="content has-text-justified">
         <p>
-          [Müller 2022] Müller, T., Evans, A., Schied, C. and Keller, A., 2022. Instant neural graphics primitives with a multiresolution hash encoding
+            [Müller 2022] Müller, T., Evans, A., Schied, C. and Keller, A., 2022. "Instant neural graphics primitives with a multiresolution hash encoding." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-15.
         </p>
         <p>
-          [Rückert 2022] Rückert, D., Franke L., and Stamminger M. 2022. "Adop: Approximate differentiable one-pixel point rendering." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-14.
+            [Rückert 2022] Rückert, D., Franke, L., and Stamminger, M., 2022. "Adop: Approximate differentiable one-pixel point rendering." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-14.
         </p>
         <p>
-          [Barron 2022] Barron, Jonathan T., et al. "Mip-nerf 360: Unbounded anti-aliased neural radiance fields." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2022.
-          </p>  
-
-            <p>
-              [Knapitsch 2017] Knapitsch, Arno, et al. "Tanks and temples: Benchmarking large-scale scene reconstruction." ACM Transactions on Graphics (ToG) 36.4 (2017): 1-13.
-            </p>
+            [Barron 2022] Barron, J., Mildenhall, B., Verbin, D., Srinivasan, P. and Hedman, P., 2022. "Mip-nerf 360: Unbounded anti-aliased neural radiance fields." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2022.
+        </p>
+        <p>
+            [Knapitsch 2017] Knapitsch, A., Park, J., Zhou, Q. and Koltun, V., 2017 "Tanks and temples: Benchmarking large-scale scene reconstruction." ACM Transactions on Graphics (ToG) 36.4 (2017): 1-13.
+        </p>
       </div>
     </div>
 
