@@ -115,13 +115,13 @@
                         <li>
                             <a href="https://arxiv.org/abs/2311.04634">
                             <image src="img/paper_text.jpg" height="60px">
-                                <h4><strong>Paper(todo)</strong></h4>
+                                <h4><strong>Paper(coming soon)</strong></h4>
                             </a>
                         </li>
                         <li>
                             <a href="https://youtu.be/adH6GyqC4Jk">
                             <image src="img/youtube_icon.png" height="60px">
-                                <h4><strong>Video(todo)</strong></h4>
+                                <h4><strong>Video(coming soon)</strong></h4>
                             </a>
                         </li>
                         <li>
@@ -135,15 +135,15 @@
         </div>
 
 
-<!--
+
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <video id="v0" width="100%" autoplay loop muted controls>
-            <source src="img/playground_low.mp4" type="video/mp4" />
+            <source src="img/trips_teaser.mp4" type="video/mp4" />
         </video>
     </div>
 </div>
-//-->
+
 
 
         <div class="row">
@@ -154,7 +154,7 @@
                 <p class="text-justify">
                     Point-based radiance field rendering has demonstrated impressive results for novel view synthesis, offering a compelling blend of rendering quality and computational efficiency. However, also latest approaches in this domain are not without their shortcomings. 3D Gaussian Splatting [Kerbl and Kopanas et al. 2023] struggles when tasked with rendering highly detailed scenes, due to blurring and cloudy artifacts. On the other hand, ADOP [Rückert et al. 2022] can accommodate crisper images, but the neural reconstruction network decreases performance, it grapples with temporal instability and it is unable to effectively address large gaps in the point cloud.
                     <br>
-                    In this paper, we present TRIPS (Trilinear Point Splatting), an approach that combines ideas from both Gaussian Splatting and ADOP. The fundamental concept behind our novel technique involves rasterizing points into a screen-space image pyramid, with the selection of the pyramid layer determined by the projected point size. This approach allows rendering arbitrarily large points using a single trilinear write. A lightweight neural network is then used to reconstruct a hole-free image including detail beyond splat resolution. Importantly, our render pipeline is entirely differentiable, allowing for automatic optimization of both point sizes and positions. 
+                    In this paper, we present TRIPS (Trilinear Point Splatting), an approach that combines ideas from both Gaussian Splatting and ADOP. The fundamental concept behind our novel technique involves rasterizing points into a screen-space image pyramid, with the selection of the pyramid layer determined by the projected point size. This approach allows rendering arbitrarily large points using a single trilinear write. A lightweight neural network is then used to reconstruct a hole-free image including detail beyond splat resolution. Importantly, our render pipeline is entirely differentiable, allowing for automatic optimization of both point sizes and positions.
                     <br>
                     Our evaluation demonstrate that TRIPS surpasses existing state-of-the-art methods in terms of rendering quality while maintaining a real-time frame rate of 60 frames per second on readily available hardware. This performance extends to challenging scenarios, such as scenes featuring intricate geometry, expansive landscapes, and auto-exposed footage.
                     </div>
@@ -190,7 +190,7 @@
                 <br>
                 Figure 1: Our pipeline: TRIPS renders a point cloud trilinearly as 2x2x2 splats into multi-layered feature maps with the results being
                 passed though our small neural network, containing only a single gated convolution per layer. This pipeline is completely differentiable, so
-                that point descriptors (colors) and positions, as well as camera parameters are optimized via gradient descent. 
+                that point descriptors (colors) and positions, as well as camera parameters are optimized via gradient descent.
                 <br>
                 <img src="img/trips_pipeline.jpg" style="width:50%" class="center">
                 <p class="text-justify">
@@ -221,7 +221,7 @@
             <div class="col-md-8 col-md-offset-2">
                 <h3>
                     Acknowledgements
-                </h3>   
+                </h3>
                 Linus Franke was supported by the Bayerische Forschungsstiftung (Bavarian Research Foundation) AZ-1422-20.
                 The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) under the NHR project b162dc. NHR funding is provided by federal and Bavarian state authorities. NHR@FAU hardware is partially funded by the German Research Foundation (DFG) – 440719683.
                 <br>
