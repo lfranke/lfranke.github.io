@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>TRIPS: Trilinear Point Splatting</title>
+
+    <meta name="description" content="Trilinear point splatting for improved point-based novel view synthesis." />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="https://lfranke.github.io/trips/img/trips_teaser_rs.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1296">
+    <meta property="og:image:height" content="840">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TRIPS: Trilinear Point Splatting for Real-Time Radiance Field Rendering" />
+    <meta property="og:description" content="Trilinear point splatting for improved point-based novel view synthesis." />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="https://lfranke.github.io/trips/" />
+    <meta name="twitter:title" content="TRIPS: Trilinear Point Splatting for Real-Time Radiance Field Rendering" />
+    <meta name="twitter:description" content="Improving point-based novel view synthesis quality by completing point cloud with 3D error volumes from 2D error maps." />
+    <meta name="twitter:image" content="https://lfranke.github.io/trips/img/trips_teaser_smallrs.jpg" />
+
+
+<!--
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
+//-->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/video_comparison.js"></script>
+
+    <link rel="stylesheet" href="css/dics.min.css">
+    <script src="js/dics.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', domReady);
+        function domReady() {
+            for (const e of document.querySelectorAll(".b-dics")) {
+                new Dics({
+                    container: e,
+                    textPosition: "top"
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <a href="..">Back to my projects</a>
+        <br><br>
+        <div class="row">
+            <h2 class="col-md-12 text-center">
+                <b>TRIPS</b>: Trilinear Point Splatting for Real-Time Radiance Field Rendering</br>
+                <small>
+                    arXiv
+                </small>
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <ul class="list-inline">
+                    <li>
+                        <a style="text-decoration:none" href="https://lfranke.github.io">
+                            Linus Franke
+                          </a>
+                        <br>FAU Erlangen-Nürnberg<br> &zwnj;
+
+                    </li>
+                    <li>
+                        <a style="text-decoration:none" href="https://github.com/darglein/">
+                            Darius Rückert
+                        </a>
+                        <br>FAU Erlangen-Nürnberg
+                        <br>Voxray GmbH
+                    </li>
+                    <li>
+                        <a style="text-decoration:none" href="https://lorafib.github.io/">
+                            Laura Fink
+                        </a>
+
+                        <br>FAU Erlangen-Nürnberg
+                        <br>Fraunhofer IIS
+                    </li>
+                    <li>
+                        <a style="text-decoration:none" href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">
+                            Marc Stamminger
+                        </a>
+                        <br>FAU Erlangen-Nürnberg
+                        <br>  &zwnj;
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row">
+                <div class="col-md-4 col-md-offset-4 text-center">
+                    <ul class="nav nav-pills nav-justified">
+                        <li>
+                            <a href="https://arxiv.org/abs/2311.04634">
+                            <image src="img/paper_text.jpg" height="60px">
+                                <h4><strong>Paper(todo)</strong></h4>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://youtu.be/adH6GyqC4Jk">
+                            <image src="img/youtube_icon.png" height="60px">
+                                <h4><strong>Video(todo)</strong></h4>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/lfranke/trips">
+                            <image src="img/github.png" height="60px">
+                                <h4><strong>Code</strong></h4>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+        </div>
+
+
+<!--
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <video id="v0" width="100%" autoplay loop muted controls>
+            <source src="img/playground_low.mp4" type="video/mp4" />
+        </video>
+    </div>
+</div>
+//-->
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Abstract
+                </h3>
+                <p class="text-justify">
+                    Point-based radiance field rendering has demonstrated impressive results for novel view synthesis, offering a compelling blend of rendering quality and computational efficiency. However, also latest approaches in this domain are not without their shortcomings. 3D Gaussian Splatting [Kerbl and Kopanas et al. 2023] struggles when tasked with rendering highly detailed scenes, due to blurring and cloudy artifacts. On the other hand, ADOP [Rückert et al. 2022] can accommodate crisper images, but the neural reconstruction network decreases performance, it grapples with temporal instability and it is unable to effectively address large gaps in the point cloud.
+                    <br>
+                    In this paper, we present TRIPS (Trilinear Point Splatting), an approach that combines ideas from both Gaussian Splatting and ADOP. The fundamental concept behind our novel technique involves rasterizing points into a screen-space image pyramid, with the selection of the pyramid layer determined by the projected point size. This approach allows rendering arbitrarily large points using a single trilinear write. A lightweight neural network is then used to reconstruct a hole-free image including detail beyond splat resolution. Importantly, our render pipeline is entirely differentiable, allowing for automatic optimization of both point sizes and positions. 
+                    <br>
+                    Our evaluation demonstrate that TRIPS surpasses existing state-of-the-art methods in terms of rendering quality while maintaining a real-time frame rate of 60 frames per second on readily available hardware. This performance extends to challenging scenarios, such as scenes featuring intricate geometry, expansive landscapes, and auto-exposed footage.
+                    </div>
+        </div>
+
+<!--
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Video
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;padding-top:56.25%;">
+                        <iframe src="https://www.youtube-nocookie.com/embed/adH6GyqC4Jk" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        //-->
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Pipeline
+                </h3>
+                Overview of our rendering pipeline.
+                <br>
+                <br>
+                <img src="img/pipeline.jpg" style="width:100%">
+                <p class="text-justify">
+                <br>
+                Figure 1: Our pipeline: TRIPS renders a point cloud trilinearly as 2x2x2 splats into multi-layered feature maps with the results being
+                passed though our small neural network, containing only a single gated convolution per layer. This pipeline is completely differentiable, so
+                that point descriptors (colors) and positions, as well as camera parameters are optimized via gradient descent. 
+                <br>
+                <img src="img/trips_pipeline.jpg" style="width:50%" class="center">
+                <p class="text-justify">
+                    <br>
+                Figure 2: Trilinear Point Splatting: (left) all points and their respective size are projected into the target image. Based on this screen space size, each point is written to the correct layer of the image pyramid using a trilinear write (right). Large points are written to layers of lower resolution and therefore cover more space in the final image.
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Citation
+                </h3>
+                <div class="form-group col-md-12 col-md-offset-0">
+                    <textarea id="bibtex" class="form-control" readonly>
+@article{franke2024trips,
+    title={TRIPS: Trilinear Point Splatting for Real-Time Radiance Field Rendering},
+    author={Linus Franke and Darius R{\"u}ckert and Laura Fink and Marc Stamminger},
+    booktitle = {arXiv},
+    year = {2024}
+}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Acknowledgements
+                </h3>   
+                Linus Franke was supported by the Bayerische Forschungsstiftung (Bavarian Research Foundation) AZ-1422-20.
+                The authors gratefully acknowledge the scientific support and HPC resources provided by the Erlangen National High Performance Computing Center (NHR@FAU) of the Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) under the NHR project b162dc. NHR funding is provided by federal and Bavarian state authorities. NHR@FAU hardware is partially funded by the German Research Foundation (DFG) – 440719683.
+                <br>
+                <br>
+
+                <p class="text-justify">
+                    The website template was adapted from <a href="https://jonbarron.info/zipnerf/">Zip-NeRF</a>, who borrowed from <a href="http://mgharbi.com/">Michaël Gharbi</a> and <a href="https://dorverbin.github.io/refnerf">Ref-NeRF</a>.
+                    Image sliders are from <a href="https://bakedsdf.github.io/">BakedSDF</a>.
+                </p>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h3>
+                References
+            </h3>
+    <div class="content has-text-justified">
+        <p>
+            [Müller 2022] Müller, T., Evans, A., Schied, C. and Keller, A., 2022. "Instant neural graphics primitives with a multiresolution hash encoding." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-15.
+        </p>
+        <p>
+            [Rückert 2022] Rückert, D., Franke, L., and Stamminger, M., 2022. "Adop: Approximate differentiable one-pixel point rendering." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-14.
+        </p>
+        <p>
+            [Barron 2022] Barron, J., Mildenhall, B., Verbin, D., Srinivasan, P. and Hedman, P., 2022. "Mip-nerf 360: Unbounded anti-aliased neural radiance fields." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2022.
+        </p>
+        <p>
+            [Knapitsch 2017] Knapitsch, A., Park, J., Zhou, Q. and Koltun, V., 2017 "Tanks and temples: Benchmarking large-scale scene reconstruction." ACM Transactions on Graphics (ToG) 36.4 (2017): 1-13.
+        </p>
+      </div>
+    </div>
+
+</body>
+</html>
