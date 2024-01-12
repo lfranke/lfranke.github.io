@@ -113,9 +113,9 @@
                 <div class="col-md-4 col-md-offset-4 text-center">
                     <ul class="nav nav-pills nav-justified">
                         <li>
-                            <a href="https://arxiv.org/abs/2311.04634">
+                            <a href="https://arxiv.org/abs/2401.06003">
                             <image src="img/paper_text.jpg" height="60px">
-                                <h4><strong>Paper(coming soon)</strong></h4>
+                                <h4><strong>Paper</strong></h4>
                             </a>
                         </li>
                         <li>
@@ -200,6 +200,140 @@
         </div>
         <br>
 
+
+
+        <div class="row comp-margin">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Result: Comparison to 3D Gaussian Splatting
+                </h3>
+                3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023] and TRIPS (ours).
+                <br>
+                <br>
+                Playground [Knapitsch 2017]
+                <video class="video" width=100% id="3dgs_trips_pg" loop playsinline autoplay muted src="img/pg_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
+                <canvas height=0 class="videoMerge" id="3dgs_trips_pgMerge"></canvas>
+                <p class="text-justify">
+                </p>
+
+            </div>
+        </div>
+
+        <div class="row comp-margin">
+            <div class="col-md-8 col-md-offset-2" style="width: 100%; overflow: hidden;">
+                <div class="b-dics" style="width: 35%; float:left">
+                    <img src="img/pg/0-Gaussian_small_crop.jpg" alt="3D GS" />
+                    <img src="img/pg/0-trips_crop.jpg" alt="TRIPS (Ours)" />
+                </div>
+
+                <div class="b-dics" style="width: 31.1%; float:left">
+                    <img src="img/pg/gaussiansplatting_0_crop_small1.jpg" alt="3D GS" />
+                    <img src="img/pg/trips_0_crop_small1.jpg" alt="TRIPS (Ours)" />
+                </div>
+                
+            </div>
+
+            <br>
+
+        </div>
+            <br>
+            <div class="row comp-margin">
+                <div class="col-md-8 col-md-offset-2">
+            </h3>
+            Horse [Knapitsch 2017]
+            <video class="video" width=100% id="3dgs_trips_horse" loop playsinline autoplay muted src="img/horse_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
+            <canvas height=0 class="videoMerge" id="3dgs_trips_horseMerge"></canvas>
+            <p class="text-justify">
+            </p>
+        </div>
+
+
+        <div class="row comp-margin">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Result: Comparison to ADOP
+                </h3>
+                Boat [Rückert 2022]
+                <video class="video" width=100% id="adop_trips_boat" loop playsinline autoplay muted src="img/boat_ADOP_vs_TRIPS_shorter.mp4" onplay="resizeAndPlay(this)"></video>
+                <canvas height=0 class="videoMerge" id="adop_trips_boatMerge"></canvas>
+                <p class="text-justify">
+                </p>
+
+            </div>
+        </div>
+
+
+
+        <div class="row comp-margin">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Results: Side-by-sides
+                </h3>
+                3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023], ADOP [Rückert 2022], MipNeRF-360 [Barron 2022] and TRIPS (ours).
+
+                <br>
+                <br>
+                Bicycle [Barron 2022]
+                <div class="b-dics" style="width: 100%">
+                <!--; float: left;">//-->
+                <img src="img/compares/adop_5_full.jpg" alt="ADOP" />
+                    <img src="img/compares/gaussiansplatting_5_full.jpg" alt="3D GS" />
+                    <img src="img/compares/trips_5_full.jpg" alt="TRIPS (Ours)" />
+                    <img src="img/compares/gt_5_full.jpg" alt="Ground Truth" />
+                </div>
+                <small>(click and drag to swipe)</small>
+                <br>
+                <br>
+                Train [Knapitsch 2017]
+                <div class="b-dics" style="width: 100%">
+                <!--; float: left;">//-->
+                <img src="img/compares/mipnerf360_2_full.jpg" alt="MipNeRF-360" />
+                <img src="img/compares/trips_2_full.jpg" alt="TRIPS (Ours)" />
+                <img src="img/compares/gaussiansplatting_2_full.jpg" alt="3D GS" />
+                    <img src="img/compares/gt_2_full.jpg" alt="Ground Truth" />
+                </div>
+                <small>(click and drag to swipe)</small>
+                <br>
+
+                <br>
+
+                Francis [Knapitsch 2017]
+                <div class="b-dics" style="width: 100%">
+                <!--; float: left;">//-->
+                <img src="img/compares/mipnerf360_4_full.jpg" alt="MipNeRF-360" />
+                <img src="img/compares/trips_4_full.jpg" alt="TRIPS (Ours)" />
+                <img src="img/compares/gaussiansplatting_4_full.jpg" alt="3D GS" />
+                    <img src="img/compares/gt_4_full.jpg" alt="Ground Truth" />
+                </div>
+                <small>(click and drag to swipe)</small>
+                <br>
+                <br>
+                Stump [Barron 2022]
+                <div class="b-dics" style="width: 100%">
+                <!--; float: left;">//-->
+                <img src="img/compares/mipnerf360_6_full.jpg" alt="MipNeRF-360" />
+                    <img src="img/compares/gaussiansplatting_6_full.jpg" alt="3D GS" />
+                    <img src="img/compares/trips_6_full.jpg" alt="TRIPS (Ours)" />
+                    <img src="img/compares/gt_6_full.jpg" alt="Ground Truth" />
+                </div>
+                <small>(click and drag to swipe)</small>
+                <br>
+                <br>
+                Boat [Rückert 2022]
+                <div class="b-dics" style="width: 100%">
+                <!--; float: left;">//-->
+                <img src="img/compares/mipnerf360_7_crop.jpg" alt="MipNeRF-360" />
+                <img src="img/compares/trips_7_crop.jpg" alt="TRIPS (Ours)" />
+                <img src="img/compares/gaussiansplatting_7_crop.jpg" alt="3D GS" />
+                    <img src="img/compares/gt_7_crop.jpg" alt="Ground Truth" />
+                </div>
+                <small>(click and drag to swipe)</small>
+                <br>
+            </div>
+        </div>
+        <br>
+
+        </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <h3>
@@ -241,7 +375,7 @@
             </h3>
     <div class="content has-text-justified">
         <p>
-            [Müller 2022] Müller, T., Evans, A., Schied, C. and Keller, A., 2022. "Instant neural graphics primitives with a multiresolution hash encoding." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-15.
+            [Kerbl and Kopanas 2023] Kerbl, B., Kopanas, G., Leimkühler, T., & Drettakis, G. 2023. "3D Gaussian Splatting for Real-Time Radiance Field Rendering". ACM Transactions on Graphics (ToG), 42(4).
         </p>
         <p>
             [Rückert 2022] Rückert, D., Franke, L., and Stamminger, M., 2022. "Adop: Approximate differentiable one-pixel point rendering." ACM Transactions on Graphics (ToG) 41.4 (2022): 1-14.
