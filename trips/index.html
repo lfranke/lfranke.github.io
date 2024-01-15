@@ -207,10 +207,14 @@
                 <h3>
                     Result: Comparison to 3D Gaussian Splatting
                 </h3>
-                3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023] and TRIPS (ours).
+                Left: 3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023] and right: TRIPS (ours).
+                <br>TRIPS is able to reconstruct fine details well, such as the grass or the chains of the swing. Furthermore, less floaters are present in ours.
+
                 <br>
                 <br>
                 Playground [Knapitsch 2017]
+            </div>
+            <div class="col-md-8 col-md-offset-1">
                 <video class="video" width=100% id="3dgs_trips_pg" loop playsinline autoplay muted src="img/pg_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
                 <canvas height=0 class="videoMerge" id="3dgs_trips_pgMerge"></canvas>
                 <p class="text-justify">
@@ -226,11 +230,13 @@
                     <img src="img/pg/0-trips_crop.jpg" alt="TRIPS (Ours)" />
                 </div>
 
-                <div class="b-dics" style="width: 31.1%; float:left">
+                <div class="b-dics" style="width: 31.2%; float:left">
                     <img src="img/pg/gaussiansplatting_0_crop_small1.jpg" alt="3D GS" />
                     <img src="img/pg/trips_0_crop_small1.jpg" alt="TRIPS (Ours)" />
                 </div>
-                
+            </div>
+            <div class="col-md-8 col-md-offset-2" style="width: 100%; overflow: hidden;">
+                <small>(click and drag to swipe)</small>
             </div>
 
             <br>
@@ -241,6 +247,9 @@
                 <div class="col-md-8 col-md-offset-2">
             </h3>
             Horse [Knapitsch 2017]
+
+        </div>
+        <div class="col-md-8 col-md-offset-1">
             <video class="video" width=100% id="3dgs_trips_horse" loop playsinline autoplay muted src="img/horse_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
             <canvas height=0 class="videoMerge" id="3dgs_trips_horseMerge"></canvas>
             <p class="text-justify">
@@ -253,6 +262,9 @@
                 <h3>
                     Result: Comparison to ADOP
                 </h3>
+                Left: ADOP [Rückert 2022] and right: TRIPS (ours). Ours provides better temporal stability than ADOP due to a linear interpolation of points instead of round-to-next-pixel rasterization.
+                <br>
+                <br>
                 Boat [Rückert 2022]
                 <video class="video" width=100% id="adop_trips_boat" loop playsinline autoplay muted src="img/boat_ADOP_vs_TRIPS_shorter.mp4" onplay="resizeAndPlay(this)"></video>
                 <canvas height=0 class="videoMerge" id="adop_trips_boatMerge"></canvas>
@@ -269,8 +281,13 @@
                 <h3>
                     Results: Side-by-sides
                 </h3>
-                3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023], ADOP [Rückert 2022], MipNeRF-360 [Barron 2022] and TRIPS (ours).
-
+                Left: ADOP [Rückert 2022] or  MipNeRF-360 [Barron 2022],
+                <br>
+                Center left: 3D Gaussian Splatting (3D GS) [Kerbl and Kopanas 2023],
+                <br>
+                Center right: TRIPS (ours),
+                <br>
+                Right: Ground truth (removed from all training sets)
                 <br>
                 <br>
                 Bicycle [Barron 2022]

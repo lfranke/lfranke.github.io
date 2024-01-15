@@ -40,7 +40,7 @@
               <td style="padding:20px;width:100%;vertical-align:middle">
                 <h2>Research</h2>
                 <p>
-                  Research interest in computer graphics, perceptual rendering, computer vision and machine learning. Currently primar focus in neural rendering and novel view synthesis. Representative papers are <span class="highlight">highlighted</span>. (*) Denotes equal contribution.
+                  Research interest in computer graphics, perceptual rendering, computer vision and machine learning. Currently primar focus in neural rendering and novel view synthesis. Representative papers are <span class="highlight">highlighted</span>.
 
                 </p>
               </td>
@@ -48,11 +48,60 @@
           </tbody></table>
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
+
+            <tr onmouseout="trips_stop()" onmouseover="trips_start()"  bgcolor="#ffffd0">
+              <td style="padding:20px;width:25%;vertical-align:bottom">
+                <div class="one">
+                  <div class="two" id='trips_image'><video  width=100% height=100%  muted autoplay loop>
+                  <source src="images/trips_teaser_website.mp4" type="video/mp4" >
+                  Your browser does not support the video tag.
+                  </video></div>
+                  <img style="vertical-align: bottom;" translate=12px src='images/trips_teaser.jpg' width="160" height="100">
+                </div>
+                <script type="text/javascript">
+                  function trips_start() {
+                    document.getElementById('trips_image').style.opacity = "1";
+                  }
+                  function trips_stop() {
+                    document.getElementById('trips_image').style.opacity = "0";
+                  }
+                  trips_stop()
+                </script>
+              </td>
+              <td style="padding:20px;width:75%;vertical-align:top">
+                <a href="trips">
+                  <span class="papertitle">TRIPS: Trilinear Point Splatting for Real-Time Radiance Field Rendering</span>
+                </a>
+                <br>
+                <strong>Linus Franke</strong>,
+                Darius Rückert,
+                Laura Fink,
+                Marc Stamminger
+                <br>
+                <em>arXiv</em>, 2024
+                <br>
+                <a href="https://lfranke.github.io/trips">project page</a>
+                /
+                <a href="https://arxiv.org/abs/2401.06003">paper</a>
+                /
+                <a href="https://youtu.be/Nw4A1tIcErQ">video</a>
+                /
+                <a href="https://github.com/lfranke/TRIPS">code</a>
+                <p></p>
+                <p>
+                Rendering and optimizing neural point clouds via trilinear point splatting and tiny neural networks for novel-view synthesis.
+                </p>
+              </td>
+            </tr>
+
+
+
+
       <tr onmouseout="vet_stop()" onmouseover="vet_start()"  bgcolor="#ffffd0">
         <td style="padding:20px;width:25%;vertical-align:bottom">
           <div class="one">
             <div class="two" id='vet_image'><video  width=100% height=100%  muted autoplay loop>
-            <source src="images/vet_bicycle_rescaled.mp4" type="video/mp4" >
+            <source src="images/vet_teaser_website.mp4" type="video/mp4" >
             Your browser does not support the video tag.
             </video></div>
             <img style="vertical-align: bottom;" translate=12px src='images/vet_teaser_res.jpeg' width="160" height="100">
@@ -82,7 +131,7 @@
           <br>
           <a href="https://lfranke.github.io/vet">project page</a>
           /
-          <a href="http://arxiv.org/abs/2311.04634">paper</a>
+          <a href="https://arxiv.org/abs/2311.04634">paper</a>
           /
           <a href="https://youtu.be/adH6GyqC4Jk">video</a>
           /
@@ -136,7 +185,7 @@
           <a href="https://github.com/mharrer97/inovis">code</a>
           <p></p>
           <p>
-          Point-based novel view synthesis without per scene preprocessing or training using neural image based rendering.
+          Point-based novel view synthesis without per scene preprocessing or training using neural image based rendering.  (*) Denotes equal contribution.
           </p>
         </td>
       </tr>
@@ -154,9 +203,9 @@
           <br>
           <em>SIGGRAPH Asia</em>, 2023
           <br>
-          <a href="">project page (coming soon)</a>
+          <a href="https://lorafib.github.io/livenvs/">project page</a>
           /
-          <a href="http://arxiv.org/abs/2311.16668">paper</a>
+          <a href="https://arxiv.org/abs/2311.16668">paper</a>
           /
           <a href="https://youtu.be/aMbE5WAgD2k">video</a>
           /
