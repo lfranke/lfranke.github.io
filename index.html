@@ -95,6 +95,53 @@
             </tr>
 
 
+            <tr onmouseout="inpc_stop()" onmouseover="inpc_start()">
+              <td style="padding:20px;width:25%;vertical-align:middle">
+                <div class="one">
+                  <div class="two" id='inpc_image'><video  width=100% height=100% muted autoplay loop>
+                  <source src="images/inpc_video.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                  </video></div>
+                  <img src='images/inpc_image.jpg' width="160">
+                </div>
+                <script type="text/javascript">
+                  function inpc_start() {
+                    document.getElementById('inpc_image').style.opacity = "1";
+                  }
+      
+                  function inpc_stop() {
+                    document.getElementById('inpc_image').style.opacity = "0";
+                  }
+                  inpc_stop()
+                </script>
+              </td>
+              <td style="padding:20px;width:75%;vertical-align:middle">
+                <a href="https://fhahlbohm.github.io/inpc">
+                  <span class="papertitle">INPC: Implicit Neural Point Clouds for Radiance Field Rendering</span>
+                </a>
+                <br>
+                Florian Hahlbohm,
+                <strong>Linus Franke</strong>,
+                Moritz Kappel,
+                Susana Castillo,
+                Marc Stamminger,
+                Marcus Magnor
+                <br>
+                <em>arXiv</em>, 2024
+                <br>
+                <a href="https://fhahlbohm.github.io/inpc">project page</a>
+                /
+                <a href="https://arxiv.org/abs/2403.16862">paper</a>
+                /
+                <a href="https://youtu.be/UqDlS3QGNMo">video</a>
+                /
+                <a href="">code</a>
+                <p></p>
+                <p>
+                Representing a point cloud implicitly provides better image quality for point-based radiance field methods.
+                </p>
+              </td>
+            </tr>
 
 
       <tr onmouseout="vet_stop()" onmouseover="vet_start()"  bgcolor="#ffffd0">
@@ -310,10 +357,10 @@
 
 
       <tr>
-        <td style="padding:20px;width:25%;vertical-align:top"  bgcolor="#ffffd0">
+        <td style="padding:20px;width:25%;vertical-align:top">
           <img src='images/mltdof_teaser.jpeg' width="160" height="100">
         </td>
-        <td style="padding:20px;width:75%;vertical-align:middle"  bgcolor="#ffffd0">
+        <td style="padding:20px;width:75%;vertical-align:middle">
           <a href="https://dl.acm.org/doi/10.1145/3203200">
             <span class="papertitle"> Multi-Layer Depth of Field Rendering with Tiled Splatting </span>
           </a>
