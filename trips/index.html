@@ -107,8 +107,6 @@
                 </ul>
             </div>
         </div>
-
-
         <div class="row">
                 <div class="col-md-4 col-md-offset-4 text-center">
                     <ul class="nav nav-pills nav-justified">
@@ -121,7 +119,7 @@
                         <li>
                             <a href="https://youtu.be/Nw4A1tIcErQ">
                             <image src="img/youtube_icon.png" height="60px">
-                                <h4><strong>Video (results only)</strong></h4>
+                                <h4><strong>Video</strong></h4>
                             </a>
                         </li>
                         <li>
@@ -133,19 +131,13 @@
                     </ul>
                 </div>
         </div>
-
-
-
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <video id="v0" width="100%" autoplay loop muted controls>
-            <source src="img/trips_teaser.mp4" type="video/mp4" />
-        </video>
-    </div>
-</div>
-
-
-
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <video id="v0" width="100%" autoplay loop muted controls>
+                    <source src="img/trips_teaser.webm" type="video/mp4" />
+                </video>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <h3>
@@ -213,9 +205,11 @@
                 <br>
                 <br>
                 Playground [Knapitsch 2017]
-            </div>
-            <div class="col-md-8 col-md-offset-1">
-                <video class="video" width=100% id="3dgs_trips_pg" loop playsinline autoplay muted src="img/pg_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
+
+                <div style="width: 100%; text-align: center;">
+                    (Videos will play during mouse hovering / on touch on mobile version.)
+                <video class="video" id="3dgs_trips_pg" loop playsinline autoplay muted src="img/pg_3dgs_vs_TRIPS.webm" ></video>
+                </div>
                 <canvas height=0 class="videoMerge" id="3dgs_trips_pgMerge"></canvas>
                 <p class="text-justify">
                 </p>
@@ -249,9 +243,13 @@
             Horse [Knapitsch 2017]
 
         </div>
-        <div class="col-md-8 col-md-offset-1">
-            <video class="video" width=100% id="3dgs_trips_horse" loop playsinline autoplay muted src="img/horse_3dgs_vs_TRIPS.mp4" onplay="resizeAndPlay(this)"></video>
+        <div class="col-md-8 col-md-offset-2">
+            <div style="width: 100%; text-align: center;">
+                (Videos will play during mouse hovering / on touch on mobile version.)
+            <video class="video" id="3dgs_trips_horse" loop playsinline autoplay muted src="img/horse_3dgs_vs_TRIPS.webm" ></video>
             <canvas height=0 class="videoMerge" id="3dgs_trips_horseMerge"></canvas>
+        </div>
+
             <p class="text-justify">
             </p>
         </div>
@@ -266,8 +264,11 @@
                 <br>
                 <br>
                 Boat [Rückert 2022]
-                <video class="video" width=100% id="adop_trips_boat" loop playsinline autoplay muted src="img/boat_ADOP_vs_TRIPS_shorter.mp4" onplay="resizeAndPlay(this)"></video>
+                <div style="width: 100%; text-align: center;">
+                    (Videos will play during mouse hovering / on touch on mobile version.)
+                <video class="video" id="adop_trips_boat" loop playsinline autoplay muted src="img/boat_ADOP_vs_TRIPS_shorter.webm" ></video>
                 <canvas height=0 class="videoMerge" id="adop_trips_boatMerge"></canvas>
+                </div>
                 <p class="text-justify">
                 </p>
 

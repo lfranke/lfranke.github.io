@@ -49,6 +49,150 @@
           <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
 
+<tr onmouseout="vrsplatting_stop()" onmouseover="vrsplatting_start()" bgcolor="#ffffd0">
+  <td style="padding:20px;width:25%;vertical-align:middle">
+    <div class="one">
+      <div class="two" id='vrsplatting_video' style="transition: opacity 0.4s">
+        <video width=100% height=100% muted autoplay loop>
+          <source src="images/vrsplatting_teaser_website.mp4" type="video/mp4">Your browser does not support the video tag.
+        </video>
+      </div>
+      <img src='images/vrsplatting_teaser.jpg' id='vrsplatting_image' width="160" style="transition: opacity 0.4s">
+    </div>
+    <script type="text/javascript">
+      function vrsplatting_start() {
+        document.getElementById('vrsplatting_image').style.opacity = "0";
+        document.getElementById('vrsplatting_video').style.opacity = "1";
+      }
+
+      function vrsplatting_stop() {
+        document.getElementById('vrsplatting_video').style.opacity = "0";
+        document.getElementById('vrsplatting_image').style.opacity = "1";
+      }
+      vrsplatting_stop()
+    </script>
+  </td>
+              <td style="padding:20px;width:75%;vertical-align:top">
+                <a href="vr_splatting">
+                  <span class="papertitle">VR-Splatting: Foveated Radiance Field Rendering via 3D Gaussian Splatting and Neural Points</span>
+                </a>
+                <br>
+                <strong>Linus Franke</strong>,
+                Laura Fink,
+                Marc Stamminger
+                <br>
+                <em>arXiv</em>, 2024
+                <br>
+                <a href="https://lfranke.github.io/vr_splatting">project page</a>
+                /
+                <a href="">paper</a>
+           <!--     /
+                <a href="https://youtu.be/Nw4A1tIcErQ">video</a>       -->
+                /
+                <a href="https://github.com/lfranke/vr_splatting">code</a>
+       
+                <p></p>
+                <p>
+                Foveated radiance field rendering with smooth Gaussian peripheral and neural point splats for crisp foveal rendering.
+                </p>
+              </td>
+            </tr>
+
+
+            <tr onmouseout="ref_depth_stop()" onmouseover="ref_depth_start()">
+              <td style="padding:20px;width:25%;vertical-align:middle">
+                <div class="one">
+                  <div class="two" id='ref_depth_image'><video   height=100%  width=100%  muted autoplay loop>
+                  <source src="images/ref_depth_teaser.mp4" type="video/mp4" >
+                  Your browser does not support the video tag.
+                  </video></div>
+                  <img style="vertical-align: bottom;" translate=12px src='images/ref_depth_teaser.jpg' width="160" height="70">
+                </div>
+                <script type="text/javascript">
+                  function ref_depth_start() {
+                    document.getElementById('ref_depth_image').style.opacity = "1";
+                  }
+                  function ref_depth_stop() {
+                    document.getElementById('ref_depth_image').style.opacity = "0";
+                  }
+                  ref_depth_stop()
+                </script>
+              </td>
+              <td style="padding:20px;width:75%;vertical-align:middle">
+                <a href="https://lorafib.github.io/ref_depth">
+                  <span class="papertitle">Refinement of Monocular Depth Maps via Multi-View Differentiable Rendering</span>
+                </a>
+                <br>
+                Laura Fink, <strong>Linus Franke</strong>, Joachim Keinert, Marc Stamminger
+                <br>
+                <em>arXiv</em>, 2024
+                <br>
+                <a href="https://lorafib.github.io/ref_depth">project page</a> 
+                /
+                <a href="https://arxiv.org/abs/2410.03861">paper</a>
+                /
+                <a href="https://github.com/lorafib/ref_depth">code</a>
+                <!-- /
+                <a href="https://youtu.be/TODO">video</a> -->
+                <p></p>
+                <p>Dense and multi-view consitent depth maps optimized from an monoscopically estimated initialization.</p>
+              </td>
+            </tr>
+
+
+                  <!-- HTGS -->
+            <tr onmouseout="htgs_stop()" onmouseover="htgs_start()">
+              <td style="padding:20px;width:25%;vertical-align:middle">
+                <div class="one">
+                  <div class="two" id='htgs_video' style="transition: opacity 0.4s">
+                    <video width=100% height=100% muted autoplay loop>
+                      <source src="images/htgs_video.mp4" type="video/mp4">Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <img src='images/htgs_image.jpg' id='htgs_image' width="160" style="transition: opacity 0.4s">
+                </div>
+                <script type="text/javascript">
+                  function htgs_start() {
+                    document.getElementById('htgs_image').style.opacity = "0";
+                    document.getElementById('htgs_video').style.opacity = "1";
+                  }
+
+                  function htgs_stop() {
+                    document.getElementById('htgs_video').style.opacity = "0";
+                    document.getElementById('htgs_image').style.opacity = "1";
+                  }
+                  htgs_stop()
+                </script>
+              </td>
+              <td style="padding:20px;width:75%;vertical-align:middle">
+                <a href="https://fhahlbohm.github.io/htgs/">
+                  <span class="papertitle">Efficient Perspective-Correct 3D Gaussian Splatting Using Hybrid Transparency</span>
+                </a>
+                <br>
+                Florian Hahlbohm,
+                Fabian Friederichs,
+                Tim Weyrich,
+                <strong>Linus Franke</strong>,
+                Moritz Kappel,
+                Susana Castillo,
+                Marc Stamminger,
+                Martin Eisemann,
+                Marcus Magnor
+                <br>
+                <em>arXiv</em>, 2024
+                <br>
+                <a href="https://fhahlbohm.github.io/htgs/">project page</a>
+                /
+                <a href="https://arxiv.org/abs/2410.08129">paper</a>
+      <!--          /-->
+      <!--          <a href="TODO">code</a>-->
+                <p></p>
+                <p>
+                A perspective-correct and view-consistent approach for 3D Gaussian splatting accelerated through hybrid transparency.
+                </p>
+              </td>
+            </tr>
+
             <tr onmouseout="trips_stop()" onmouseover="trips_start()"  bgcolor="#ffffd0">
               <td style="padding:20px;width:25%;vertical-align:bottom">
                 <div class="one">

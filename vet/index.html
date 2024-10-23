@@ -207,17 +207,21 @@
                 </h3>
                 Intial point clouds are missing details, thus rendering is impacted heavily. Our pipeline produces convincing renderings through point cloud completion.
                 <br>
-                <div class="b-dics" style="width: 95%">
+                <div class="b-dics" style="width: 100%">
                 <!--; float: left;">//-->
                     <img src="img/tree/out_debug_2_initial.jpg" alt="Initial Point Cloud" />
                     <img src="img/tree/out_debug_2_vet.jpg" alt="Ours" />
                 </div>
-                <small>(click and drag to swipe)</small>
-                <div class="b-dics" style="width: 95%">
+                <div style="width: 100%; text-align: center;">
+                    <small>(click and drag to swipe)</small>
+                </div>               
+                 <div class="b-dics" style="width: 100%">
                     <img src="img/tree/init_render.jpg" alt="Initial Rendering" />
                     <img src="img/tree/vet_render.jpg" alt="Ours" />
                 </div>
-                <small>(click and drag to swipe)</small>
+                <div style="width: 100%; text-align: center;">
+                    <small>(click and drag to swipe)</small>
+                </div>
             </div>
         </div>
         <div class="row comp-margin">
@@ -226,8 +230,15 @@
                     Result: Dense Point Cloud Completion and Cleaning
                 </h3>
                 Garden [Barron 2022]
-                <video class="video" width=100% id="pointclouds" loop playsinline autoplay muted src="img/garden_init_vs_vet_low.mp4" onplay="resizeAndPlay(this)"></video>
-                <canvas height=0 class="videoMerge" id="pointcloudsMerge"></canvas>
+                <br><br>
+                <div style="width: 100%; text-align: center;">
+                    (Videos will play during mouse hovering / on touch on mobile version.)
+                <video class="video" id="pointclouds" loop playsinline autoplay muted src="img/garden_init_vs_vet_low.mp4" ></video>
+                <canvas class="videoMerge" id="pointcloudsMerge"></canvas>
+               </div>
+               <br>             
+
+
                 <p class="text-justify">
                     The initial COLMAP reconstruction is missing fine details and has outliers through fuzzy edges. Completion via VET and cleaning via opacity optimization fixes that.
                 </p>
@@ -242,8 +253,9 @@
                     <img src="img/comp/adop_crop.jpg" alt="ADOP Rendering" />
                     <img src="img/comp/vet_crop.jpg" alt="Ours" />
                 </div>
-                <small>(click and drag to swipe)</small>
-            </div>
+                <div style="width: 100%; text-align: center;">
+                    <small>(click and drag to swipe)</small>
+                </div>            </div>
             <br>
 
         </div>
@@ -257,8 +269,11 @@
                     Result: Sparse Point Cloud Completion
                 </h3>
                 COLMAPs sparse reconstruction can be efficiently completed.
-                <video class="video" width=100% id="sparsepc" loop playsinline autoplay muted src="img/garden_sparse_complete_low.mp4" onplay="resizeAndPlay(this)"></video>
-                <canvas height=0 class="videoMerge" id="sparsepcMerge"></canvas>
+                <div style="width: 100%; text-align: center;">
+                    (Videos will play during mouse hovering / on touch on mobile version.)
+                <video class="video" id="sparsepc" loop playsinline autoplay muted src="img/garden_sparse_complete_low.mp4"></video>
+                <canvas class="videoMerge" id="sparsepcMerge"></canvas>
+                </div>
                 <p class="text-justify">
                 </p>
 
@@ -274,26 +289,28 @@
                 </h3>
                 <br>
                 Playground [Knapitsch 2017]
-                <div class="b-dics" style="width: 95%">
+                <div class="b-dics" style="width: 100%">
                 <!--; float: left;">//-->
                 <img src="img/tnt/pg_adop.jpg" alt="ADOP" />
                     <img src="img/tnt/pg_vet.jpg" alt="Ours" />
                     <img src="img/tnt/pg_mipnerf.jpg" alt="MipNeRF-360" />
                     <img src="img/tnt/pg_gt.jpg" alt="Ground Truth" />
                 </div>
-                <small>(click and drag to swipe)</small>
-                <br>
+                <div style="width: 100%; text-align: center;">
+                    <small>(click and drag to swipe)</small>
+                </div>                <br>
                 <br>
                 Lighthouse [Knapitsch 2017]
-                <div class="b-dics" style="width: 95%">
+                <div class="b-dics" style="width: 100%">
                 <!--; float: left;">//-->
                 <img src="img/tnt/lh_gt.jpg" alt="Ground Truth" />
                 <img src="img/tnt/lh_mipnerf.jpg" alt="MipNeRF-360" />
                 <img src="img/tnt/lh_vet.jpg" alt="Ours" />
                 <img src="img/tnt/lh_adop.jpg" alt="ADOP" />
                 </div>
-                <small>(click and drag to swipe)</small>
-            </div>
+                <div style="width: 100%; text-align: center;">
+                    <small>(click and drag to swipe)</small>
+                </div>            </div>
         </div>
         <br>
 
