@@ -66,6 +66,59 @@
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
+              <tr onmouseout="vrsplatting_stop()" onmouseover="vrsplatting_start()" bgcolor="#ffffd0">
+                <td style="padding:20px;width:25%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='vrsplatting_video' style="transition: opacity 0.4s">
+                      <video width=100% height=100% muted autoplay loop>
+                        <source src="images/vrsplatting_teaser_website.mp4" type="video/mp4">Your browser does not
+                        support the video tag.
+                      </video>
+                    </div>
+                    <img src='images/vrsplatting_teaser.jpg' id='vrsplatting_image' width="160"
+                      style="transition: opacity 0.4s">
+                  </div>
+                  <script type="text/javascript">
+                    function vrsplatting_start() {
+                      document.getElementById('vrsplatting_image').style.opacity = "0";
+                      document.getElementById('vrsplatting_video').style.opacity = "1";
+                    }
+
+                    function vrsplatting_stop() {
+                      document.getElementById('vrsplatting_video').style.opacity = "0";
+                      document.getElementById('vrsplatting_image').style.opacity = "1";
+                    }
+                    vrsplatting_stop()
+                  </script>
+                </td>
+
+                <td style="padding:20px;width:75%;vertical-align:top">
+                  <a href="vr_splatting">
+                    <span class="papertitle">VR-Splatting: Foveated Radiance Field Rendering via 3D Gaussian Splatting
+                      and Neural Points</span>
+                  </a>
+                  <br>
+                  <strong>Linus Franke</strong>,
+                  Laura Fink,
+                  Marc Stamminger
+                  <br>
+                  <em> i3D 2025 (Proceedings of the ACM on Computer Graphics and Interactive Techniques)</em>, 2025
+                  <br>
+                  <a href="https://lfranke.github.io/vr_splatting">project page</a>
+                  /
+                  <a href="https://arxiv.org/abs/2410.17932">paper</a>
+                  <!--     /
+                <a href="https://youtu.be/Nw4A1tIcErQ">video</a>       -->
+                  /
+                  <a href="https://github.com/lfranke/vr_splatting">code</a>
+
+                  <p></p>
+                  <p>
+                    Foveated radiance field rendering with smooth Gaussian peripheral and neural point splats for crisp
+                    foveal rendering.
+                  </p>
+                </td>
+              </tr>
 
               <!-- INPC -->
               <tr onmouseout="inpc_stop()" onmouseover="inpc_start()">
@@ -174,59 +227,7 @@
                 </td>
               </tr>
 
-              <tr onmouseout="vrsplatting_stop()" onmouseover="vrsplatting_start()" bgcolor="#ffffd0">
-                <td style="padding:20px;width:25%;vertical-align:middle">
-                  <div class="one">
-                    <div class="two" id='vrsplatting_video' style="transition: opacity 0.4s">
-                      <video width=100% height=100% muted autoplay loop>
-                        <source src="images/vrsplatting_teaser_website.mp4" type="video/mp4">Your browser does not
-                        support the video tag.
-                      </video>
-                    </div>
-                    <img src='images/vrsplatting_teaser.jpg' id='vrsplatting_image' width="160"
-                      style="transition: opacity 0.4s">
-                  </div>
-                  <script type="text/javascript">
-                    function vrsplatting_start() {
-                      document.getElementById('vrsplatting_image').style.opacity = "0";
-                      document.getElementById('vrsplatting_video').style.opacity = "1";
-                    }
 
-                    function vrsplatting_stop() {
-                      document.getElementById('vrsplatting_video').style.opacity = "0";
-                      document.getElementById('vrsplatting_image').style.opacity = "1";
-                    }
-                    vrsplatting_stop()
-                  </script>
-                </td>
-
-                <td style="padding:20px;width:75%;vertical-align:top">
-                  <a href="vr_splatting">
-                    <span class="papertitle">VR-Splatting: Foveated Radiance Field Rendering via 3D Gaussian Splatting
-                      and Neural Points</span>
-                  </a>
-                  <br>
-                  <strong>Linus Franke</strong>,
-                  Laura Fink,
-                  Marc Stamminger
-                  <br>
-                  <em>arXiv</em>, 2024
-                  <br>
-                  <a href="https://lfranke.github.io/vr_splatting">project page</a>
-                  /
-                  <a href="https://arxiv.org/abs/2410.17932">paper</a>
-                  <!--     /
-                <a href="https://youtu.be/Nw4A1tIcErQ">video</a>       -->
-                  /
-                  <a href="https://github.com/lfranke/vr_splatting">code</a>
-
-                  <p></p>
-                  <p>
-                    Foveated radiance field rendering with smooth Gaussian peripheral and neural point splats for crisp
-                    foveal rendering.
-                  </p>
-                </td>
-              </tr>
 
 
               <tr onmouseout="ref_depth_stop()" onmouseover="ref_depth_start()">
@@ -368,6 +369,8 @@
                   <a href="https://youtu.be/adH6GyqC4Jk">video</a>
                   /
                   <a href="https://github.com/lfranke/VET">code</a>
+                  /
+                  <a href="https://youtu.be/dMsD_xXOEKA?feature=shared&t=1933">fast forward</a>
                   <p></p>
                   <p>
                     Improving point-based novel view synthesis quality by completing point cloud with 3D error volumes
@@ -435,7 +438,7 @@
                   <img src='images/livenvs_teaser.jpg' width="160" height="100">
                 </td>
                 <td style="padding:20px;width:75%;vertical-align:middle">
-                  <a href="">
+                  <a href="https://lorafib.github.io/livenvs/">
                     <span class="papertitle">LiveNVS: Neural View Synthesis on Live RGB-D Streams</span>
                   </a>
                   <br>
@@ -469,7 +472,7 @@
                   <br>
                   Laura Fink, Svenja Strobel, <strong>Linus Franke</strong>, Marc Stamminger
                   <br>
-                  <em>Proceedings of the ACM on Computer Graphics and Interactive Techniques (i3d)</em>, 2023
+                  <em>i3D 2023 (Proceedings of the ACM on Computer Graphics and Interactive Techniques)</em>, 2023
                   <br>
                   <a href="https://dl.acm.org/doi/pdf/10.1145/3585498">paper</a>
                   /
@@ -565,7 +568,7 @@
                   <br>
                   <strong>Linus Franke</strong>, Nikolai Hofmann, Marc Stamminger, Kai Selgrad
                   <br>
-                  <em>Proceedings of the ACM on Computer Graphics and Interactive Techniques (i3d)</em>, 2018
+                  <em> i3D 2018 (Proceedings of the ACM on Computer Graphics and Interactive Techniques)</em>, 2018
                   <br>
                   <a href="https://selgrad.org/publications/2018_i3d_FHSS.pdf">paper</a>
                   /
