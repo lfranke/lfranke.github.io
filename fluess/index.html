@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Flüssigkeitssimulation in Echtzeit</title>
+
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="">
+    <meta property="og:image:type" content="image/jpg">
+    <!-- <meta property="og:video:width" content="750">
+    <meta property="og:image:height" content="500"> -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Flüssigkeitssimulation in Echtzeit" />
+    <meta property="og:description" content="" />
+
+<!--
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
+//-->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/video_comparison.js"></script>
+
+    <link rel="stylesheet" href="css/dics.min.css">
+    <script src="js/dics.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', domReady);
+        function domReady() {
+            for (const e of document.querySelectorAll(".b-dics")) {
+                new Dics({
+                    container: e,
+                    textPosition: "top"
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <a href="..">Back to my projects</a>
+        <br><br>
+        <div class="row">
+            <h2 class="col-md-12 text-center">
+                <b>Flüssigkeitssimulation in Echtzeit</b></br>
+                
+                <!-- <small>
+                    Under review
+                </small> -->
+                <small>
+                Beschleunigung auf der GPU
+         
+            </small>
+
+            </h2>
+        </div>
+    
+        <div class="row">
+
+
+            <div class="col-md-8 col-md-offset-2">
+                <br>
+                <p class="text-justify">
+                <br>
+                    <h3>
+Material
+                    </h3>
+                <h5>
+                     
+                <a href="./mat/Vorlesung.pdf">
+
+Vorlesungsfolien
+                            </a>
+        <br>
+
+                    <h4>
+                                <br>
+
+Zusätzliches Material:
+
+                    </h4>
+
+                        <a href="https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda
+">Schneller Scan auf der GPU [GPUGems3-39]</a>        <br>
+        <br>
+
+                        <a href="https://mmacklin.com/pbf_sig_preprint.pdf">Position-based Fluids Paper [Macklin and Müller 2013]</a>        <br>
+        <br>
+
+                        <a href="https://web.archive.org/web/20140725014123/https://docs.nvidia.com/cuda/samples/5_Simulations/particles/doc/particles.pdf">Particle Simulation in CUDA [Tech Report]</a>
+       <br>
+       <br>
+
+                        <a href="https://www.youtube.com/watch?v=rSKMYc1CQHE">Interessantes Unity Coding Tutorial [Youtube]</a>
+
+
+                        
+        </div>
+
+    </div>
+
+</body>
+</html>
