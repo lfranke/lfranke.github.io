@@ -31,7 +31,7 @@
                     Friedrich-Alexander-Universität Erlangen-Nürnberg, Germany.
                   </p>
                   <p style="text-align:center">
-                    <a href="mailto:">linus (dot) franke (at) fau (dot) de</a> &nbsp;/&nbsp;
+                    <a href="mailto:">linus (dot) franke (at) inria (dot) fr</a> &nbsp;/&nbsp;
                     <a href="https://scholar.google.com/citations?hl=en&user=WwjWM6UAAAAJ">Scholar</a> &nbsp;/&nbsp;
                     <a href="https://bsky.app/profile/linusfranke.bsky.social">Bluesky</a> &nbsp;/&nbsp;
                     <a href="https://twitter.com/_linus_franke">Twitter</a> &nbsp;/&nbsp;
@@ -64,7 +64,56 @@
           <table
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
+   <!-- INPC v2 -->
+                <tr onmouseout="inpc_v2_stop()" onmouseover="inpc_v2_start()">
+                  <td style="padding:20px;width:25%;vertical-align:middle">
+                    <div class="one">
+                      <div class="two" id='inpc_v2_video' style="transition: opacity 0.4s">
+                        <video  width=100% height=100% muted autoplay loop>
+                          <source src="images/inpc_v2_video.mp4" type="video/mp4">Your browser does not support the video tag.
+                        </video></div>
+                      <img src='images/inpc_v2_image.jpg' id='inpc_v2_image' width="160" style="transition: opacity 0.4s">
+                    </div>
+                    <script type="text/javascript">
+                      function inpc_v2_start() {
+                        document.getElementById('inpc_v2_image').style.opacity = "0";
+                        document.getElementById('inpc_v2_video').style.opacity = "1";
+                      }
 
+                      function inpc_v2_stop() {
+                        document.getElementById('inpc_v2_video').style.opacity = "0";
+                        document.getElementById('inpc_v2_image').style.opacity = "1";
+                      }
+                      inpc_v2_stop()
+                    </script>
+                  </td>
+                  <td style="padding:20px;width:75%;vertical-align:middle">
+                    <a href="https://fhahlbohm.github.io/inpc_v2/">
+                      <span class="papertitle">A Bag of Tricks for Efficient Implicit Neural Point Clouds</span>
+                    </a>
+                    <br>
+                    Florian Hahlbohm,
+                    <strong>Linus Franke</strong>,
+                    Leon Overkämping,
+                    Paula Wespe,
+                    Susana Castillo,
+                    Martin Eisemann,
+                    Marcus Magnor
+                    <br>
+                    <em>VMV</em>, 2025
+                    <br>
+                    <a href="https://fhahlbohm.github.io/inpc_v2/">project page</a>
+                    /
+                    <a href="https://arxiv.org/abs/2508.19140">paper</a>
+                    /
+                    <a href="https://fhahlbohm.github.io/inpc_v2/">code</a>
+                    <p></p>
+                    <p>
+                      Faster INPC training and rendering with less VRAM and better quality.
+                    </p>
+                  </td>
+                </tr>
+                    <!-- VrSpl -->
               <tr onmouseout="vrsplatting_stop()" onmouseover="vrsplatting_start()" bgcolor="#ffffd0">
                 <td style="padding:20px;width:25%;vertical-align:middle">
                   <div class="one">
@@ -90,6 +139,7 @@
                     vrsplatting_stop()
                   </script>
                 </td>
+             
 
                 <td style="padding:20px;width:75%;vertical-align:top">
                   <a href="vr_splatting">
