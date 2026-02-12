@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
 <html lang="en">
-
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -8,6 +7,7 @@
 
   <meta name="author" content="Linus Franke">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/favicon/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
 
 </head>
@@ -68,41 +68,54 @@
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
-              <!-- Surffill--->
-              <tr bgcolor="#ffffd0">
-                <td style="padding:20px;width:25%;vertical-align:top">
-                  <img src='images/surffill_teaser.jpg' width="160" height="100">
-                </td>
-                <td style="padding:20px;width:80%;vertical-align:middle">
-                  <a href="https://lfranke.github.io/surffill/">
-                    <span class="papertitle">SurfFill: Completion of LiDAR Point Clouds via Gaussian Surfel
-                      Splatting</span>
-                  </a>
-                  <br>
-                  <a href="https://www.linkedin.com/in/svenja-strobel-370a27332/">Svenja Strobel</a>,
-                  <a href="https://www.lgdv.tf.fau.de/person/matthias-innmann/">Matthias Innmann</a>,
-                  <a href="https://eggerbernhard.ch/">Bernhard Egger</a>,
-                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
-                  <strong>Linus Franke</strong>
-                  <br>
-                  <em>arXiv</em>, 2025
-                  <br>
-                  <a href="https://lfranke.github.io/surffill">project page</a>
-                  /
-                  <a href="https://arxiv.org/abs/2512.03010">paper</a>
-                  /
-                  <a href="https://youtu.be/OS3q5OWT-sg">video</a>
-                  /
-                  <a href="https://github.com/qy21gafy/SurfFill">code</a>
-                  <p></p>
-                  <p>
-                    Completion of LiDAR point clouds with photometric Gaussian splatting reconstruction, based on region
-                    ambiguity.
-                  </p>
-                </td>
-              </tr>
 
+          <!-- Faster-GS -->
+          <tr onmouseout="fastergs_stop()" onmouseover="fastergs_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id="fastergs_video" style="transition: opacity 0.4s">
+                  <video  width=100% height=100% muted autoplay loop>
+                    <source src="images/fastergs_video.mp4" type="video/mp4">Your browser does not support the video tag.
+                  </video></div>
+                <img src="images/fastergs_image.jpg" id="fastergs_image" width="160" style="transition: opacity 0.4s">
+              </div>
+              <script type="text/javascript">
+                function fastergs_start() {
+                  document.getElementById("fastergs_image").style.opacity = "0";
+                  document.getElementById("fastergs_video").style.opacity = "1";
+                }
 
+                function fastergs_stop() {
+                  document.getElementById("fastergs_video").style.opacity = "0";
+                  document.getElementById("fastergs_image").style.opacity = "1";
+                }
+                fastergs_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://fhahlbohm.github.io/faster-gaussian-splatting/">
+                <span class="papertitle">Faster-GS: Analyzing and Improving Gaussian Splatting Optimization</span>
+              </a>
+              <br>
+              <a href="https://fhahlbohm.github.io/">Florian Hahlbohm</a>,
+              <strong>Linus Franke</strong>,
+              <a href="https://graphics.tu-bs.de/people/eisemann">Martin Eisemann</a>,
+              <a href="https://graphics.tu-bs.de/people/magnor">Marcus Magnor</a>
+              <br>
+              <em>arXiv</em>, 2026
+              <br>
+              <a href="https://fhahlbohm.github.io/faster-gaussian-splatting/">project page</a>
+              /
+              <a href="https://arxiv.org/abs/2602.09999">paper</a>
+              /
+              <a href="https://github.com/nerficg-project/faster-gaussian-splatting">code</a>
+              <p></p>
+              <p>
+               <!-- A research-friendly Gaussian Splatting framework that integrates and extends existing ideas for significantly improved efficiency.--->
+                A performance survey, analysis, integration, and extension of Gaussian Splatting training optimizations, leading up to a 5&times; speedup in training time without loss of quality.
+              </p>
+            </td>
+          </tr>
 
               <!-- MSGS--->
 
@@ -133,7 +146,7 @@
                   -->
               <tr bgcolor="#ffffd0">
                 <td style="padding:20px;width:25%;vertical-align:top">
-                  <img src='images/teaser_ms_splatting.jpg' width="160" height="160">
+                  <img src='images/teaser_ms_splatting.jpg' width="160" >
                 </td>
                 <td style="padding:20px;width:80%;vertical-align:middle">
                   <a href="https://meyerls.github.io/ms_splatting/">
@@ -155,7 +168,7 @@
                   <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
                   <strong>Linus Franke</strong>
                   <br>
-                  <em>arXiv</em>, 2025
+                  <em>Eurographics (Computer Graphics Forum)</em>, 2026
                   <br>
                   <a href="https://meyerls.github.io/ms_splatting/">project page</a>
                   /
@@ -166,12 +179,75 @@
                   <a href="https://github.com/j-gruen/MS-Splatting">code</a>
                   <p></p>
                   <p>
-                    Enhancing Gaussian Splatting for multi-spectral renderings (e.g. red-edge, near-infrared) with a
-                    joint
-                    color band neural emissive function.
+                    Gaussian Splatting for multi-spectral images (e.g. red-edge, near-infrared) using a joint color-band feature representation and a neural emission function.
                   </p>
                 </td>
               </tr>
+
+
+              <!-- Nepo--->
+              <tr bgcolor="#ffffd0">
+                <td style="padding:20px;width:25%;vertical-align:top">
+                  <img src='images/NePO_teaser_small.jpg' width="160" >
+                </td>
+                <td style="padding:20px;width:80%;vertical-align:middle">
+                  <a href="https://nolewi.github.io/nepo">
+                    <span class="papertitle">NePO: Neural Point Octrees for Large-scale Novel View Synthesis</span>
+                  </a>
+                  <br>
+                  <a href="https://nolewi.github.io">Noah Lewis</a>,                
+                  <a href="https://github.com/darglein/">Darius Rückert</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
+                  <strong>Linus Franke</strong>
+                  <br>
+                  <em>Computer Graphics Forum</em>, 2025
+                  <br>
+                  <a href="https://nolewi.github.io/nepo/">project page</a>
+                  /
+                  <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/cgf.70287">paper</a>
+                  /
+                  <a href="https://nolewi.github.io/nepo/">code</a>
+                  <p></p>
+                  <p>
+                    Large-scale radiance field rendering with neural point octrees for hierarchical point rendering, enabling efficient level of detail selection and real-time rendering of complex scenes.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Surffill--->
+              <tr>
+                <td style="padding:20px;width:25%;vertical-align:top">
+                  <img src='images/surffill_teaser.jpg' width="160" height="100">
+                </td>
+                <td style="padding:20px;width:80%;vertical-align:middle">
+                  <a href="https://lfranke.github.io/surffill/">
+                    <span class="papertitle">SurfFill: Completion of LiDAR Point Clouds via Gaussian Surfel
+                      Splatting</span>
+                  </a>
+                  <br>
+                  <a href="https://www.linkedin.com/in/svenja-strobel-370a27332/">Svenja Strobel</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/matthias-innmann/">Matthias Innmann</a>,
+                  <a href="https://eggerbernhard.ch/">Bernhard Egger</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
+                  <strong>Linus Franke</strong>
+                  <br>
+                  <em>arXiv</em>, 2025
+                  <br>
+                  <a href="https://lfranke.github.io/surffill">project page</a>
+                  /
+                  <a href="https://arxiv.org/abs/2512.03010">paper</a>
+                  /
+                  <a href="https://youtu.be/OS3q5OWT-sg">video</a>
+                  /
+                  <a href="https://github.com/qy21gafy/SurfFill">code</a>
+                  <p></p>
+                  <p>
+                    Completion of LiDAR point clouds with photometric Gaussian Splatting reconstruction, based on region
+                    ambiguity.
+                  </p>
+                </td>
+              </tr>
+
 
               <!-- TIMS--->
 
@@ -230,8 +306,8 @@
                   <a href="https://github.com/j-gruen/MS-Splatting">code</a>
                   <p></p>
                   <p>
-                    Exploration of multi-spectral capturings in Gaussian Splatting systems. (*) Denotes equal
-                    contribution.
+                    Exploration of the integration of multi-spectral capturings (e.g. near-infrared) in Gaussian Splatting systems through investigating training regimes. 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*) Denotes equal contribution.
                   </p>
                 </td>
 
@@ -269,7 +345,7 @@
                   <a href="https://scholar.google.com/citations?user=ZyKghS4AAAAJ">Joachim Keinert</a>,
                   <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>
                   <br>
-                  <em>Vision, Modeling, and Visualization (VMV)</em>, 2025
+                  <em>Vision, Modeling, and Visualization (VMV)</em>, 2025 <em><strong>(Honorable Mention Award)</strong></em>
                   <br>
                   <a href="https://lorafib.github.io/ref_depth">project page</a>
                   /
@@ -279,8 +355,7 @@
                   /
                   <a href="https://github.com/lorafib/ref_depth">code</a>
                   <p></p>
-                  <p>Dense and multi-view consitent depth maps optimized from an monoscopically estimated
-                    initialization.</p>
+                  <p>Dense and multi-view consistent depth maps optimized from a monocular depth estimation initialization.</p>
                 </td>
               </tr>
 
@@ -333,7 +408,7 @@
                   <a href="https://fhahlbohm.github.io/inpc_v2/">code</a>
                   <p></p>
                   <p>
-                    Faster INPC training and rendering with less VRAM and better quality.
+                    Faster implicit neural point cloud (INPC) training and rendering with less VRAM and better quality.
                   </p>
                 </td>
               </tr>
@@ -387,59 +462,8 @@
 
                   <p></p>
                   <p>
-                    Foveated radiance field rendering with smooth Gaussian peripheral and neural point splats for crisp
+                    Foveated radiance field rendering with smooth Gaussian peripheral renderings and neural point splatting for crisp
                     foveal rendering.
-                  </p>
-                </td>
-              </tr>
-
-              <!-- INPC -->
-              <tr onmouseout="inpc_stop()" onmouseover="inpc_start()">
-                <td style="padding:20px;width:25%;vertical-align:middle">
-                  <div class="one">
-                    <div class="two" id='inpc_image'><video width=100% height=100% muted autoplay loop>
-                        <source src="images/inpc_video.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                      </video></div>
-                    <img src='images/inpc_image.jpg' width="160">
-                  </div>
-                  <script type="text/javascript">
-                    function inpc_start() {
-                      document.getElementById('inpc_image').style.opacity = "1";
-                    }
-
-                    function inpc_stop() {
-                      document.getElementById('inpc_image').style.opacity = "0";
-                    }
-                    inpc_stop()
-                  </script>
-                </td>
-                <td style="padding:20px;width:75%;vertical-align:middle">
-                  <a href="https://fhahlbohm.github.io/inpc">
-                    <span class="papertitle">INPC: Implicit Neural Point Clouds for Radiance Field Rendering</span>
-                  </a>
-                  <br>
-                  <a href="https://fhahlbohm.github.io">Florian Hahlbohm</a>,
-                  <strong>Linus Franke</strong>,
-                  <a href="https://moritzkappel.github.io/">Moritz Kappel</a>,
-                  <a href="https://graphics.tu-bs.de/people/castillo">Susana Castillo</a>,
-                  <a href="https://graphics.tu-bs.de/people/eisemann">Martin Eisemann</a>,
-                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
-                  <a href="https://graphics.tu-bs.de/people/magnor">Marcus Magnor</a>
-                  <br>
-                  <em>3DV</em>, 2025 (Oral)
-                  <br>
-                  <a href="https://fhahlbohm.github.io/inpc">project page</a>
-                  /
-                  <a href="https://arxiv.org/abs/2403.16862">paper</a>
-                  /
-                  <a href="https://www.youtube.com/watch?v=XnMlwvNb2-Q">video</a>
-                  /
-                  <a href="https://github.com/nerficg-project/INPC">code</a>
-                  <p></p>
-                  <p>
-                    Implicit volume-based scene reconstruction combined with point rendering for high detail novel-view
-                    synthesis.
                   </p>
                 </td>
               </tr>
@@ -492,12 +516,61 @@
                   <a href="https://arxiv.org/abs/2410.08129">paper</a>
                   /
                   <a href="https://github.com/nerficg-project/HTGS">code</a>
-                  <!--          /-->
-                  <!--          <a href="TODO">code</a>-->
                   <p></p>
                   <p>
-                    A perspective-correct and view-consistent approach for 3D Gaussian splatting accelerated through
+                    A perspective-correct and view-consistent approach for 3D Gaussian splatting, accelerated through
                     hybrid transparency.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- INPC -->
+              <tr onmouseout="inpc_stop()" onmouseover="inpc_start()">
+                <td style="padding:20px;width:25%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='inpc_image'><video width=100% height=100% muted autoplay loop>
+                        <source src="images/inpc_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video></div>
+                    <img src='images/inpc_image.jpg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function inpc_start() {
+                      document.getElementById('inpc_image').style.opacity = "1";
+                    }
+
+                    function inpc_stop() {
+                      document.getElementById('inpc_image').style.opacity = "0";
+                    }
+                    inpc_stop()
+                  </script>
+                </td>
+                <td style="padding:20px;width:75%;vertical-align:middle">
+                  <a href="https://fhahlbohm.github.io/inpc">
+                    <span class="papertitle">INPC: Implicit Neural Point Clouds for Radiance Field Rendering</span>
+                  </a>
+                  <br>
+                  <a href="https://fhahlbohm.github.io">Florian Hahlbohm</a>,
+                  <strong>Linus Franke</strong>,
+                  <a href="https://moritzkappel.github.io/">Moritz Kappel</a>,
+                  <a href="https://graphics.tu-bs.de/people/castillo">Susana Castillo</a>,
+                  <a href="https://graphics.tu-bs.de/people/eisemann">Martin Eisemann</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
+                  <a href="https://graphics.tu-bs.de/people/magnor">Marcus Magnor</a>
+                  <br>
+                  <em>3DV</em>, 2025 <em><strong>(Oral)</strong></em>
+                  <br>
+                  <a href="https://fhahlbohm.github.io/inpc">project page</a>
+                  /
+                  <a href="https://arxiv.org/abs/2403.16862">paper</a>
+                  /
+                  <a href="https://www.youtube.com/watch?v=XnMlwvNb2-Q">video</a>
+                  /
+                  <a href="https://github.com/nerficg-project/INPC">code</a>
+                  <p></p>
+                  <p>
+                    Implicit volume-based scene reconstruction combined with point rendering for high detail novel view
+                    synthesis.
                   </p>
                 </td>
               </tr>
@@ -546,7 +619,7 @@
                   <p></p>
                   <p>
                     Rendering and optimizing neural point clouds via trilinear point splatting and tiny neural networks
-                    for novel-view synthesis.
+                    for fast and accurate novel view synthesis.
                   </p>
                 </td>
               </tr>
@@ -657,15 +730,30 @@
                   <p></p>
                   <p>
                     Point-based novel view synthesis without per scene preprocessing or training using neural image
-                    based rendering. (*) Denotes equal contribution.
+                    based rendering. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*) Denotes equal contribution.
                   </p>
                 </td>
               </tr>
 
-              <tr>
-                <td style="padding:20px;width:25%;vertical-align:top">
-                  <img src='images/livenvs_teaser.jpg' width="160" height="100">
-                </td>
+            <tr onmouseout="livenvs_stop()" onmouseover="livenvs_start()">
+              <td style="padding:20px;width:25%;vertical-align:middle">
+                <div class="one">
+                  <div class="two" id='livenvs_image'><video   height=100%  width=100%  muted autoplay loop>
+                  <source src="images/livenvs_teaser_low.mp4" type="video/mp4" >
+                  Your browser does not support the video tag.
+                  </video></div>
+                  <img style="vertical-align: bottom;" translate=12px src='images/livenvs_teaser.jpg' width="160" height="100">
+                </div>
+                <script type="text/javascript">
+                  function livenvs_start() {
+                    document.getElementById('livenvs_image').style.opacity = "1";
+                  }
+                  function livenvs_stop() {
+                    document.getElementById('livenvs_image').style.opacity = "0";
+                  }
+                  livenvs_stop()
+                </script>
+              </td>
                 <td style="padding:20px;width:75%;vertical-align:middle">
                   <a href="https://lorafib.github.io/livenvs/">
                     <span class="papertitle">LiveNVS: Neural View Synthesis on Live RGB-D Streams</span>
@@ -689,7 +777,7 @@
                   /
                   <a href="https://youtu.be/dMsD_xXOEKA?si=Xrt7whA7y6DbCYzH&t=1892">fast forward</a>                  
                   <p></p>
-                  <p>Novel view synthesis on live RGB-D streams with feedback during capturing, robust to slam loop
+                  <p>Novel view synthesis on live RGB-D streams with feedback during capturing using on-the-fly surface integration, robust to slam loop
                     closures.</p>
                 </td>
               </tr>
@@ -718,8 +806,8 @@
                   /
                   <a href="https://github.com/lorafib/projs-for-lfd-rendering">code</a>
                   <p></p>
-                  <p>Rendering only relevant fragments for parallax-based light field displays through device-tailored
-                    projection matrices.</p>
+                  <p>Fast parallax-based light field display rendering through device-tailored
+                    projection matrices, reducing fragment overhead.</p>
                 </td>
               </tr>
 
@@ -786,7 +874,7 @@
                   <a href="https://scholar.google.com/citations?user=DQDuHWgAAAAJ">Kai Selgrad</a>,
                   <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>
                   <br>
-                  <em>Computer Graphics Forum</em>, 2021 (Oral presentation at Eurographics 2021)
+                  <em>Computer Graphics Forum</em>, 2021 <em>(Oral presentation at Eurographics 2021)</em>
                   <br>
                   <a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.14176">paper</a>
                   /
@@ -796,7 +884,7 @@
                     href="https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fcgf.14176&file=cgf14176-sup-0001-SuppMat.pdf">supplemental
                     material</a>
                   <p></p>
-                  <p>Foveated Rendering via temporal forward reprojection for fast, imperceptible VR rendering.</p>
+                  <p>Foveated Rendering via temporal forward reprojection for faster VR rendering, exploiting the visual acuity falloff.</p>
                 </td>
               </tr>
 
@@ -867,7 +955,7 @@
                   /
                   <a href="https://diglib.eg.org/bitstream/handle/10.2312/egp20161056/poster-a4.pdf">poster</a>
                   <p></p>
-                  <p>Single-layer tiled splatting for depth of field rendering.</p>
+                  <p>A tiled splatting approach for fast depth of field rendering.</p>
                 </td>
               </tr>
 

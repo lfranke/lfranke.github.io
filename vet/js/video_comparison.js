@@ -37,7 +37,6 @@ function playVids(videoId) {
         if (!dragging) return;
         var bcr = videoMerge.getBoundingClientRect();
         position = ((e.pageX - bcr.x) / bcr.width).clamp(0, 1);
-        console.log('Slider position updated:', position);
     }
 
     function playOnHover(e) {
@@ -55,7 +54,6 @@ function playVids(videoId) {
         if (!dragging) return;
         var bcr = videoMerge.getBoundingClientRect();
         position = ((e.touches[0].pageX - bcr.x) / bcr.width).clamp(0, 1);
-        console.log('Touch slider position updated:', position);
     }
 
     function startDragging() {
