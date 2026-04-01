@@ -26,10 +26,13 @@
                   <p class="name" style="text-align: center;">
                     Linus Franke
                   </p>
-                  <p>I am a postdoctoral researcher at Inria Sophia-Antipolis, France in the <a
+                  <p>I am a tenure-track assistant professor for Visual Computing at the Institute of Computer Science of the <a 
+                      href=https://www.informatik.uni-wuerzburg.de/en/>Julius-Maximilians-Universität Würzburg</a>, Germany.
+                      <br><br>
+                    Before that, I was a postdoctoral researcher at Inria Sophia-Antipolis, France in the <a
                       href="https://team.inria.fr/graphdeco/">GraphDeco</a> group with <a
                       href="https://www-sop.inria.fr/members/George.Drettakis/">George Drettakis</a>.
-                    Before that, I completed my PhD under the supervision of <a
+                    I completed my PhD under the supervision of <a
                       href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a> at the <a
                       href="https://www.lgdv.tf.fau.de/">Chair of Visual Computing</a> of the
                     Friedrich-Alexander-Universität Erlangen-Nürnberg, Germany.
@@ -57,7 +60,7 @@
                   <h2>Research</h2>
                   <p>
                     Research interest in computer graphics, perceptual rendering, computer vision and machine learning.
-                    Current primar focus in neural rendering, multimodal reconstruction and novel view synthesis.
+                    Current primar focus in neural rendering, inverse rendering, multimodal reconstruction and novel view synthesis.
                     Representative papers are <span class="highlight">highlighted</span>.
                   </p>
                 </td>
@@ -67,6 +70,53 @@
           <table
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
+          <!-- Fus3D -->
+          <tr onmouseout="fus3d_stop()" onmouseover="fus3d_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id="fus3d_video" style="transition: opacity 0.4s">
+                  <video  width=100% height=100% muted autoplay loop>
+                    <source src="images/fus3d_teaser_padded.mp4" type="video/mp4">Your browser does not support the video tag.
+                  </video></div>
+                <img src="images/fus3d_teaser.png" id="fus3d_image" width="160" style="transition: opacity 0.4s">
+              </div>
+              <script type="text/javascript">
+                function fus3d_start() {
+                  document.getElementById("fus3d_image").style.opacity = "0";
+                  document.getElementById("fus3d_video").style.opacity = "1";
+                }
+
+                function fus3d_stop() {
+                  document.getElementById("fus3d_video").style.opacity = "0";
+                  document.getElementById("fus3d_image").style.opacity = "1";
+                }
+                fus3d_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://lorafib.github.io/fus3d">
+                <span class="papertitle">Fus3D: Decoding Consolidated 3D Geometry from Feed-Forward Geometry Transformer Latents</span>
+              </a>
+              <br>
+              <a href="https://lorafib.github.io/">Laura Fink</a>,
+              <strong>Linus Franke</strong>,
+              <a href="https://grgkopanas.github.io/">George Kopanas</a>,
+              <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
+              <a href="https://phogzone.com/">Peter Hedman</a>
+              <br>
+              <em>arXiv</em>, 2026
+              <br>
+              <a href="https://lorafib.github.io/fus3d">project page</a>
+              /
+              <a href="https://arxiv.org/abs/2603.25827">paper</a>
+              /
+              <a href="https://github.com/lorafib/fus3d">code</a>
+              <p></p>
+              <p>
+              Extracting features of feed-forward geometry transformers (like VGGT) into a consolidated grid-structured latent space and directly decoding a 3D representation. 
+              </p>
+            </td>
+          </tr>
 
 
           <!-- Faster-GS -->
