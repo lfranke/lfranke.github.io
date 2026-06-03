@@ -133,3 +133,56 @@ h2 {
 span.highlight {
   background-color: #ffffd0;
 }
+
+/* ===== Top navigation bar (sticky) ===== */
+.sidebar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 22px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #ffffff;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sidebar .sidebar-title {
+  margin: 0 28px 0 0;
+  font-family: 'Lato', Verdana, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.sidebar a.navlink {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-right: 8px;
+  border-radius: 6px;
+  font-family: 'Lato', Verdana, Helvetica, sans-serif;
+  font-size: 16px;
+  color: #1772d0;
+  cursor: pointer;
+}
+
+.sidebar a.navlink:hover {
+  color: #f09228;
+  background-color: #f6f6f6;
+}
+
+.sidebar a.navlink.active {
+  color: #ffffff;
+  background-color: #1772d0;
+  font-weight: 700;
+}
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}

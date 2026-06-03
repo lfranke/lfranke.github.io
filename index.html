@@ -13,20 +13,26 @@
 </head>
 
 <body>
+  <nav class="sidebar">
+    <p class="sidebar-title">Linus Franke</p>
+    <a class="navlink" id="nav-research" href="#research" onclick="showSection('research'); return false;">Research</a>
+    <a class="navlink" id="nav-teaching" href="#teaching" onclick="showSection('teaching'); return false;">Teaching</a>
+  </nav>
+
   <table
     style="width:100%;max-width:850px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
     <tbody>
       <tr style="padding:0px">
         <td style="padding:0px">
-          <table
+          <table id="bio"
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
               <tr style="padding:0px">
                 <td style="padding:2.5%;width:70%;vertical-align:middle">
                   <p class="name" style="text-align: center;">
-                    Linus Franke
+                    Prof. Dr.-Ing. Linus Franke
                   </p>
-                  <p>I am a tenure-track assistant professor for Visual Computing at the Institute of Computer Science of the <a 
+                  <p>I am a tenure-track junior professor (eq. assistant professor) for Visual Computing at the Institute of Computer Science of the <a 
                       href=https://www.informatik.uni-wuerzburg.de/en/>Julius-Maximilians-Universität Würzburg</a>, Germany.
                       <br><br>
                     Before that, I was a postdoctoral researcher at Inria Sophia-Antipolis, France in the <a
@@ -52,6 +58,7 @@
               </tr>
             </tbody>
           </table>
+          <div id="research" class="page-section active">
           <table
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
@@ -60,7 +67,7 @@
                   <h2>Research</h2>
                   <p>
                     Research interest in computer graphics, perceptual rendering, computer vision and machine learning.
-                    Current primar focus in neural rendering, inverse rendering, multimodal reconstruction and novel view synthesis.
+                    Current primary focus in neural rendering, inverse rendering, multimodal reconstruction and novel view synthesis.
                     Representative papers are <span class="highlight">highlighted</span>.
                   </p>
                 </td>
@@ -1013,6 +1020,86 @@
 
             </tbody>
           </table>
+          </div><!-- /#research -->
+
+          <div id="teaching" class="page-section">
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:20px;width:100%;vertical-align:middle">
+                  <h2>Teaching</h2>
+                  <p>
+                    Information on theses, seminars, and lectures. 
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- ===== Thesis ===== -->
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:20px;width:100%;vertical-align:middle">
+                  <h2>Thesis</h2>
+                  <p>
+                    I supervise Bachelor's and Master's theses in computer graphics, neural rendering, and 3D computer vision at the University of Würzburg.
+                    <br>
+                    I mainly supervise in computer science related programs, including Games Engineering, Artificial Intelligence and Data Science, Human-Computer-Interaction, Computer Science and Sustainability as well as Computer Science for Aerospace.
+                                       <br>
+                  If you are interested, feel free to reach out via
+                    <a href="mailto:">linus (dot) franke (at) uni-wuerzburg (dot) de</a>.
+                  </p>
+                  <p>
+                    <strong>Open topics:</strong>                 
+                  New topics are added regularly, please reach out if you are interested to receive a list of currently open thesis topics.
+                  <br>
+                  <br>
+                  If you have an idea for a thesis topic that you would like to pursue, please feel free to reach out with your idea (in the form of a half page proposal) and your transcript of records.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- ===== Seminar ===== -->
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:20px;width:100%;vertical-align:middle">
+                  <h2>Seminar</h2>
+                  <p>
+                    Similar to the thesis supervision, I supervise seminar projects in computer graphics, neural rendering, and 3D computer vision at the University of Würzburg.
+                    If you are interested, feel free to reach out via <a href="mailto:">linus (dot) franke (at) uni-wuerzburg (dot) de</a> with a half page proposal and your transcript of records.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- ===== Lectures ===== -->
+          <table
+            style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+            <tbody>
+              <tr>
+                <td style="padding:20px;width:100%;vertical-align:middle">
+                  <h2>Lectures</h2>
+                  <p>
+                    Current courses taught.
+                  </p>
+                  <ul>
+                    <li><strong>Asset Development</strong> &mdash; SS26, details on wuecampus.</li>
+                    <li><strong>Game Labs III</strong> &mdash; SS26, details on wuecampus.</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div><!-- /#teaching -->
+
           <table
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
@@ -1030,6 +1117,30 @@
         </td>
       </tr>
   </table>
+
+  <script type="text/javascript">
+    function showSection(name) {
+      if (name !== 'research' && name !== 'teaching') {
+        name = 'research';
+      }
+      document.getElementById('research').classList.toggle('active', name === 'research');
+      document.getElementById('teaching').classList.toggle('active', name === 'teaching');
+      document.getElementById('bio').style.display = (name === 'teaching') ? 'none' : '';
+      document.getElementById('nav-research').classList.toggle('active', name === 'research');
+      document.getElementById('nav-teaching').classList.toggle('active', name === 'teaching');
+      if (window.history && history.replaceState) {
+        history.replaceState(null, '', '#' + name);
+      }
+    }
+
+    // Select section from URL hash on load (defaults to research).
+    showSection((window.location.hash || '#research').substring(1));
+
+    // React to hash changes (e.g. back/forward navigation).
+    window.addEventListener('hashchange', function () {
+      showSection((window.location.hash || '#research').substring(1));
+    });
+  </script>
 </body>
 
 </html>
