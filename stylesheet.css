@@ -134,6 +134,24 @@ span.highlight {
   background-color: #ffffd0;
 }
 
+/* ===== Toggleable paper highlighting ===== */
+/* When highlighting is switched off, override both the representative-paper
+   row backgrounds (set via the bgcolor attribute) and the inline highlight span. */
+body.highlights-off tr[bgcolor="#ffffd0"] {
+  background-color: transparent;
+}
+
+body.highlights-off span.highlight {
+  background-color: transparent;
+}
+
+/* Inline clickable highlight toggle: always underlined to signal it is
+   clickable; the yellow background (from span.highlight) shows when on. */
+.highlight-toggle {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* ===== Top navigation bar (sticky) ===== */
 .sidebar {
   position: sticky;

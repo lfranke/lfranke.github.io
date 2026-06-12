@@ -12,7 +12,7 @@
 
 </head>
 
-<body>
+<body class="highlights-off">
   <nav class="sidebar">
     <p class="sidebar-title">Linus Franke</p>
     <a class="navlink" id="nav-research" href="#research" onclick="showSection('research'); return false;">Research</a>
@@ -68,7 +68,7 @@
                   <p>
                     Research interest in computer graphics, perceptual rendering, computer vision and machine learning.
                     Current primary focus in neural rendering, inverse rendering, multimodal reconstruction and novel view synthesis.
-                    Representative papers are <span class="highlight">highlighted</span>.
+                    <span class="highlight highlight-toggle" onclick="toggleHighlights()" title="Click to toggle highlighting">Highlight representative papers.</span>
                   </p>
                 </td>
               </tr>
@@ -242,6 +242,38 @@
                   </p>
                 </td>
               </tr>
+              <!-- Surffill--->
+              <tr bgcolor="#ffffd0">
+                <td style="padding:20px;width:25%;vertical-align:top">
+                  <img src='images/surffill_teaser.jpg' width="160" height="100">
+                </td>
+                <td style="padding:20px;width:80%;vertical-align:middle">
+                  <a href="https://lfranke.github.io/surffill/">
+                    <span class="papertitle">SurfFill: Completion of LiDAR Point Clouds via Gaussian Surfel Splatting</span>
+                  </a>
+                  <br>
+                  <a href="https://www.linkedin.com/in/svenja-strobel-370a27332/">Svenja Strobel</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/matthias-innmann/">Matthias Innmann</a>,
+                  <a href="https://eggerbernhard.ch/">Bernhard Egger</a>,
+                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
+                  <strong>Linus Franke</strong>
+                  <br>
+                  <em>Computers & Graphics</em>, 2026
+                  <br>
+                  <a href="https://lfranke.github.io/surffill">project page</a>
+                  /
+                  <a href="https://arxiv.org/abs/2512.03010">paper</a>
+                  /
+                  <a href="https://youtu.be/OS3q5OWT-sg">video</a>
+                  /
+                  <a href="https://github.com/qy21gafy/SurfFill">code</a>
+                  <p></p>
+                  <p>
+                    Completion of LiDAR point clouds with photometric Gaussian Splatting reconstruction, based on region
+                    ambiguity.
+                  </p>
+                </td>
+              </tr>
 
 
               <!-- Nepo--->
@@ -273,38 +305,6 @@
                 </td>
               </tr>
 
-              <!-- Surffill--->
-              <tr>
-                <td style="padding:20px;width:25%;vertical-align:top">
-                  <img src='images/surffill_teaser.jpg' width="160" height="100">
-                </td>
-                <td style="padding:20px;width:80%;vertical-align:middle">
-                  <a href="https://lfranke.github.io/surffill/">
-                    <span class="papertitle">SurfFill: Completion of LiDAR Point Clouds via Gaussian Surfel Splatting</span>
-                  </a>
-                  <br>
-                  <a href="https://www.linkedin.com/in/svenja-strobel-370a27332/">Svenja Strobel</a>,
-                  <a href="https://www.lgdv.tf.fau.de/person/matthias-innmann/">Matthias Innmann</a>,
-                  <a href="https://eggerbernhard.ch/">Bernhard Egger</a>,
-                  <a href="https://www.lgdv.tf.fau.de/person/marc-stamminger/">Marc Stamminger</a>,
-                  <strong>Linus Franke</strong>
-                  <br>
-                  <em>arXiv</em>, 2025
-                  <br>
-                  <a href="https://lfranke.github.io/surffill">project page</a>
-                  /
-                  <a href="https://arxiv.org/abs/2512.03010">paper</a>
-                  /
-                  <a href="https://youtu.be/OS3q5OWT-sg">video</a>
-                  /
-                  <a href="https://github.com/qy21gafy/SurfFill">code</a>
-                  <p></p>
-                  <p>
-                    Completion of LiDAR point clouds with photometric Gaussian Splatting reconstruction, based on region
-                    ambiguity.
-                  </p>
-                </td>
-              </tr>
 
 
               <!-- TIMS--->
@@ -1070,9 +1070,9 @@
             <tbody>
               <tr>
                 <td style="padding:20px;width:100%;vertical-align:middle">
-                  <h2>Seminar</h2>
+                  <h2>Seminar and Projects</h2>
                   <p>
-                    Similar to the thesis supervision, I supervise seminar projects in computer graphics, neural rendering, and 3D computer vision at the University of Würzburg.
+                    Similar to the thesis supervision, I supervise seminar and project work in computer graphics, neural rendering, and 3D computer vision at the University of Würzburg.
                     If you are interested, feel free to reach out via <a href="mailto:">linus (dot) franke (at) uni-wuerzburg (dot) de</a> with a half page proposal and your transcript of records.
                   </p>
                 </td>
@@ -1119,6 +1119,10 @@
   </table>
 
   <script type="text/javascript">
+    function toggleHighlights() {
+      document.body.classList.toggle('highlights-off');
+    }
+
     function showSection(name) {
       if (name !== 'research' && name !== 'teaching') {
         name = 'research';
