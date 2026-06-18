@@ -46,8 +46,8 @@
                   <p style="text-align:center">
                     <a href="mailto:">linus (dot) franke (at) uni-wuerzburg (dot) de</a> &nbsp;/&nbsp;
                     <a href="https://scholar.google.com/citations?hl=en&user=WwjWM6UAAAAJ">Scholar</a> &nbsp;/&nbsp;
-                    <a href="https://bsky.app/profile/linusfranke.bsky.social">Bluesky</a> &nbsp;/&nbsp;
                     <a href="https://twitter.com/_linus_franke">Twitter</a> &nbsp;/&nbsp;
+                    <a href="https://bsky.app/profile/linusfranke.bsky.social">Bluesky</a> &nbsp;/&nbsp;
                     <a href="https://github.com/lfranke/">Github</a>
                   </p>
                 </td>
@@ -77,6 +77,59 @@
           <table
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
+
+
+          <!-- Lighting-Consistent Object Transfer -->
+          <tr onmouseout="dot3d_stop()" onmouseover="dot3d_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id="dot3d_video" style="transition: opacity 0.4s">
+                  <video  width=100% height=100% muted autoplay loop>
+                    <source src="images/dot3d_teaser_vid.mp4" type="video/mp4">Your browser does not support the video tag.
+                  </video></div>
+                <img src="images/dot3d_teaser.jpg" id="dot3d_image" width="160" style="transition: opacity 0.4s">
+              </div>
+              <script type="text/javascript">
+                function dot3d_start() {
+                  document.getElementById("dot3d_image").style.opacity = "0";
+                  document.getElementById("dot3d_video").style.opacity = "1";
+                }
+
+                function dot3d_stop() {
+                  document.getElementById("dot3d_video").style.opacity = "0";
+                  document.getElementById("dot3d_image").style.opacity = "1";
+                }
+                dot3d_stop()
+              </script>
+            </td>
+            <td style="padding:8px;width:80%;vertical-align:middle">
+              <a href="https://repo-sam.inria.fr/nerphys/dot3d">
+                <span class="papertitle">Lighting-Consistent Object Transfer Across Radiance Fields</span>
+              </a>
+              <br>
+              <a href="https://nviolante25.github.io/">Nicolás Violante</a>,
+              <a href="https://grgkopanas.github.io/">George Kopanas</a>,
+              <strong>Linus Franke</strong>,
+              <a href="https://julienphilip.com/">Julian Philip</a>,
+              <a href="https://www-sop.inria.fr/members/George.Drettakis/">George Drettakis</a>
+              <br>
+              <em>Computer Graphics Forum (EGSR)</em>, 2026
+              <br>
+              <a href="https://repo-sam.inria.fr/nerphys/dot3d">project page</a>
+              /
+              <a href="https://repo-sam.inria.fr/nerphys/dot3d/dot3d.pdf">paper</a>
+              /
+              <a href="https://github.com/graphdeco-inria/dot3d">code</a>
+              /
+              <a href="https://youtu.be/IQ6faOJPGog?si=GCJgrlS0XPWeaRIo">video</a>
+              <p></p>
+              <p>
+                A diffusion-based harmonization approach that transfers objects between 3DGS scenes by correcting the illumiantion of the objects and adding matching shadows and reflections.
+              </p>
+            </td>
+          </tr>
+
+
           <!-- Fus3D -->
           <tr onmouseout="fus3d_stop()" onmouseover="fus3d_start()">
             <td style="padding:20px;width:25%;vertical-align:middle">
