@@ -1,77 +1,924 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIBS: Hierarchical Incremental Beta Splatting</title>
+<meta name="description" content="HIBS reconstructs radiance fields online from an image stream, using beta kernels whose shape acts as a confidence dial. WACV 2027.">
+<meta property="og:title" content="Hierarchical Incremental Beta Splatting for Online Reconstruction">
+<meta property="og:description" content="Online radiance-field reconstruction with confidence-shaped beta primitives, error-driven relocation and a shape-preserving LoD hierarchy. WACV 2027.">
+<meta property="og:image" content="https://linus-franke.com/hibs/media/teaser_garden.jpg">
+<meta property="og:url" content="https://linus-franke.com/hibs/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* Layout: one centred reading column for text, a wider column for media; bands alternate
+     plain/tinted. Palette is the paper's viridis confidence map: yellow = soft, purple = solid. */
+  :root{
+    --ink:#1b2025; --muted:#5f6974; --faint:#a9b2ba; --line:#e2e6ea;
+    --bg:#ffffff; --bg-alt:#f5f7f8; --tile:#ffffff; --paper:#ffffff;
+    --accent:#1f8a85; --accent-ink:#ffffff; --solid:#440154; --soft:#c9d81c;
+    --btn:#1b2025; --btn-ink:#ffffff; --ours-row:#e9f5f4; --first:#c9ece4; --second:#eef6d2;
+    --shadow:0 10px 30px rgba(27,32,37,.12); --vidbg:#0c0e10; --logo-filter:none;
+    --serif:Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif;
+    --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"SFMono-Regular",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e5e9ec; --muted:#9aa4ae; --faint:#5d6771; --line:#2a3138;
+      --bg:#121619; --bg-alt:#181d21; --tile:#1b2025; --paper:#eef1f3;
+      --accent:#43bdb4; --accent-ink:#0d1a19; --solid:#b98ee0; --soft:#d8e219;
+      --btn:#e5e9ec; --btn-ink:#121619; --ours-row:#16302e; --first:#1d4a42; --second:#3a4522;
+      --shadow:0 10px 30px rgba(0,0,0,.45); --vidbg:#07090a; --logo-filter:brightness(0) invert(.85); color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e5e9ec; --muted:#9aa4ae; --faint:#5d6771; --line:#2a3138;
+    --bg:#121619; --bg-alt:#181d21; --tile:#1b2025; --paper:#eef1f3;
+    --accent:#43bdb4; --accent-ink:#0d1a19; --solid:#b98ee0; --soft:#d8e219;
+    --btn:#e5e9ec; --btn-ink:#121619; --ours-row:#16302e; --first:#1d4a42; --second:#3a4522;
+    --shadow:0 10px 30px rgba(0,0,0,.45); --vidbg:#07090a; --logo-filter:brightness(0) invert(.85); color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;
+        padding-left:max(20px, env(safe-area-inset-left, 0px));
+        padding-right:max(20px, env(safe-area-inset-right, 0px))}
+  .wide{max-width:1240px}
+  .prose{max-width:720px}
+  section{padding-block:60px}
+  section.alt{background:var(--bg-alt)}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;margin:0 0 .45em;text-wrap:balance}
+  h1{font-size:clamp(1.75rem,4.3vw,2.75rem);letter-spacing:-.005em}
+  h2{font-size:1.7rem}
+  h3{font-size:1.22rem}
+  p{margin:0 0 1em}
+  .lede{color:var(--muted);max-width:720px;margin-bottom:28px}
+  .muted{color:var(--muted)}
+  .small{font-size:.9rem}
+  .eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+           font-weight:600;margin-bottom:10px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  b,strong{font-weight:600}
+  .math{font-family:var(--serif);font-style:italic;white-space:nowrap}
 
-<head lang="en">
-    <meta charset="UTF-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+  /* ---------- header ---------- */
+  header{padding-block:64px 22px;text-align:center}
+  .venue{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:1.08rem;margin:.2em 0 1.1em}
+  .authors{font-size:1.08rem;margin:0}
+  .authors a{color:var(--ink)}
+  .affil{color:var(--muted);font-size:.96rem;margin:.15em 0 .7em}
+  .logos{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 26px;margin:0 0 1.5em}
+  .logos img{height:26px;width:auto;filter:var(--logo-filter)}
+  .btnrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--btn);color:var(--btn-ink);
+       border-radius:999px;padding:9px 20px;font-size:.95rem;border:1.5px solid var(--btn);
+       transition:opacity .15s}
+  .btn:hover{opacity:.85;text-decoration:none}
+  .btn svg{width:15px;height:15px;fill:currentColor}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--faint);opacity:1}
 
-    <title>TEST</title>
+  /* ---------- media ---------- */
+  figure{margin:0}
+  .vid{width:100%;display:block;background:var(--vidbg)}
+  .frame{position:relative;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);background:var(--vidbg)}
+  figcaption{color:var(--muted);font-size:.92rem;margin-top:11px;line-height:1.5}
+  figcaption.c{text-align:center}
+  .tag{position:absolute;bottom:10px;background:rgba(10,12,14,.64);color:#fff;
+       font-size:.8rem;padding:3px 11px;border-radius:999px;letter-spacing:.02em;
+       backdrop-filter:blur(3px);pointer-events:none;max-width:46%;white-space:nowrap;
+       overflow:hidden;text-overflow:ellipsis}
+  .tag.l{left:10px}.tag.r{right:10px}.tag.t{top:10px;bottom:auto}
+  .yt{aspect-ratio:16/9;max-width:100%}
+  .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .pp{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;padding:0;
+      display:grid;place-items:center;background:rgba(10,12,14,.6);color:#fff;cursor:pointer;opacity:.8;
+      backdrop-filter:blur(3px);transition:opacity .15s;z-index:2}
+  .pp:hover,.pp:focus-visible{opacity:1}
+  .pp svg{width:12px;height:12px;fill:currentColor}
+  .halfline{position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:rgba(255,255,255,.6)}
+  .paper{background:var(--paper);border-radius:10px;padding:18px;border:1px solid var(--line)}
+  .paper img{display:block;width:100%;height:auto}
 
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  /* headline numbers */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:30px;
+         border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat{padding:18px 14px;text-align:center}
+  .stat+.stat{border-left:1px solid var(--line)}
+  .stat b{display:block;font-family:var(--serif);font-size:1.9rem;line-height:1.1;
+          font-variant-numeric:tabular-nums;color:var(--ink)}
+  .stat span{color:var(--muted);font-size:.86rem;line-height:1.35;display:block;margin-top:6px}
+  @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}
+    .stat:nth-child(3){border-left:none}.stat:nth-child(n+3){border-top:1px solid var(--line)}}
 
-    <meta property="og:image" content="">
-    <meta property="og:image:type" content="image/jpg">
-    <!-- <meta property="og:video:width" content="750">
-    <meta property="og:image:height" content="500"> -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="TEST" />
-    <meta property="og:description" content="" />
+  /* pills / tabs */
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+  .pills button{font:inherit;font-size:.88rem;padding:6px 15px;border-radius:999px;cursor:pointer;
+                border:1.5px solid var(--line);background:var(--tile);color:var(--ink);transition:border-color .12s}
+  .pills button:hover{border-color:var(--faint)}
+  .pills button[aria-pressed="true"]{background:var(--btn);color:var(--btn-ink);border-color:var(--btn)}
+  .pills.sub button{font-size:.83rem;padding:4px 13px}
+  .ctl{display:flex;flex-direction:column;gap:2px}
+  .cityrow{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:36px;align-items:center}
+  @media(max-width:860px){.cityrow{grid-template-columns:1fr;gap:18px}}
+  .facts{margin:0;display:grid;gap:0;font-variant-numeric:tabular-nums}
+  .facts div{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .facts div:first-child{border-top:1px solid var(--line)}
+  .facts dt{color:var(--muted)}
+  .facts dd{margin:0;text-align:right}
+  .facts div:first-child dt{color:var(--ink);font-weight:600}
+  .lab{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+            font-weight:600;min-width:74px}
+  .ctlrow{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 
-<!--
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
-//-->
+  /* method steps */
+  .steps{display:grid;gap:56px;margin-top:46px}
+  .step{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:36px;align-items:center}
+  .step:nth-child(even){grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+  .step:nth-child(even) .step-media{order:-1}
+  .step-media .rt{margin-top:22px}
+  .step.top{align-items:start}
+  .step.top>div:first-child{padding-top:8px}
+  .step-num{font-family:var(--serif);font-size:.95rem;color:var(--accent);font-weight:600;
+            letter-spacing:.04em;margin-bottom:6px}
+  .step p{color:var(--ink)}
+  .step .note{color:var(--muted);font-size:.92rem}
+  .eq{font-family:var(--serif);font-size:1.02rem;background:var(--bg-alt);border:1px solid var(--line);
+      border-radius:8px;padding:10px 14px;margin:0 0 1em;overflow-x:auto;white-space:nowrap}
+  section.alt .eq{background:var(--tile)}
+  @media(max-width:860px){.step,.step:nth-child(even){grid-template-columns:1fr;gap:18px}.step:nth-child(even) .step-media{order:0}}
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
-    <link rel="stylesheet" href="css/app.css">
+  /* runtime bars (to scale: 1 ms = 1/480 of the track) */
+  .rt{margin:4px 0 1em}
+  .rt-row{display:grid;grid-template-columns:96px 1fr 56px;gap:10px;align-items:center;margin:8px 0;
+          font-size:.85rem}
+  .rt-row .who{color:var(--muted)}
+  .rt-row .tot{font-variant-numeric:tabular-nums;text-align:right}
+  .rt-bar{display:flex;height:20px;border-radius:4px;overflow:hidden;background:var(--line)}
+  .rt-bar i{display:block;height:100%}
+  .rt-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--muted);margin-top:6px}
+  .rt-key span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;
+                       margin-right:6px;vertical-align:-1px;background:var(--c)}
+  .c-io{--c:#9aa4ae}.c-pose{--c:#3b528b}.c-spawn{--c:#5ec962}.c-burst{--c:#21918c}.c-hier{--c:var(--solid)}
+  .rt-bar .c-io{background:#9aa4ae}.rt-bar .c-pose{background:#3b528b}.rt-bar .c-spawn{background:#5ec962}
+  .rt-bar .c-burst{background:#21918c}.rt-bar .c-hier{background:var(--solid)}
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+  /* grids */
+  .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+  /* confidence colourbar */
+  .cbar{height:12px;border-radius:6px;margin:16px auto 6px;max-width:440px;
+        background:linear-gradient(90deg,#fde725,#5ec962,#21918c,#3b528b,#440154)}
+  .cbar-lab{display:flex;justify-content:space-between;gap:16px;max-width:440px;margin:0 auto;
+            color:var(--muted);font-size:.84rem}
 
-    <script src="js/app.js"></script>
-    <script src="js/video_comparison.js"></script>
+  /* before/after slider */
+  .slider{position:relative;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);
+          background:var(--vidbg);user-select:none;-webkit-user-select:none;touch-action:pan-y}
+  .slider img{display:block;width:100%;height:auto;pointer-events:none}
+  .slider .top{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+  .slider .top img{width:100%;height:100%;object-fit:cover}
+  .slider .bar{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;margin-left:-1px;background:#fff;
+               box-shadow:0 0 6px rgba(0,0,0,.4);pointer-events:none}
+  .slider .knob{position:absolute;top:50%;left:var(--x,50%);width:34px;height:34px;margin:-17px 0 0 -17px;
+                border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);pointer-events:none;
+                display:grid;place-items:center;color:#1b2025;font-size:13px;letter-spacing:-2px}
+  .slider input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;
+                -webkit-appearance:none;appearance:none}
+  .slider input:focus-visible ~ .knob{outline:3px solid var(--accent);outline-offset:2px}
+  .heldout{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);gap:30px;align-items:start;margin-top:8px}
+  .heldout .ctl{gap:14px}
+  .heldout .ctlrow{flex-direction:column;gap:6px}
+  .slider-wrap{width:100%}
+  .slider-wrap.narrow{max-width:720px}
+  @media(max-width:860px){.heldout{grid-template-columns:1fr;gap:12px}}
 
-    <link rel="stylesheet" href="css/dics.min.css">
-    <script src="js/dics.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', domReady);
-        function domReady() {
-            for (const e of document.querySelectorAll(".b-dics")) {
-                new Dics({
-                    container: e,
-                    textPosition: "top"
-                });
-            }
-        }
-    </script>
+  /* tables */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--tile)}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+  th,td{padding:8px 11px;text-align:center;white-space:nowrap}
+  th{font-weight:600;background:var(--bg-alt)}
+  thead tr:first-child th{border-bottom:1px solid var(--line)}
+  thead tr:last-child th{border-bottom:2px solid var(--line);font-size:.8rem;color:var(--muted);font-weight:500}
+  td:first-child,th:first-child{text-align:left}
+  th.grp,td.grp{border-left:1px solid var(--line)}
+  tbody tr{border-bottom:1px solid var(--line)}
+  tbody tr:last-child{border-bottom:none}
+  tr.ref td{color:var(--muted)}
+  tr.sep{border-bottom:2px solid var(--line)}
+  tr.ours{background:var(--ours-row)}
+  tr.ours td:first-child{font-weight:600}
+  td.f{background:var(--first);font-weight:600}
+  td.s{background:var(--second)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.84rem;color:var(--muted);margin:12px 0 0}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .tblnote{font-size:.86rem;color:var(--muted);margin:10px 0 0;max-width:900px}
+  .panel[hidden]{display:none}
+
+  a.cite{color:inherit;text-decoration:underline dotted var(--faint);text-underline-offset:3px}
+  a.cite:hover{color:var(--accent);text-decoration-color:var(--accent)}
+  .refs{list-style:none;margin:0;padding:0;columns:2;column-gap:40px;font-size:.9rem;line-height:1.45}
+  .refs li{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;break-inside:avoid;padding-bottom:14px}
+  .refs .rk{font-weight:600;color:var(--ink)}
+  .refs a{color:var(--ink)}
+  .refs a:hover{color:var(--accent)}
+  .refs .by{color:var(--muted);display:block}
+  .refs .ds{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+  @media(max-width:860px){.refs{columns:1}.refs li{grid-template-columns:100px minmax(0,1fr)}}
+  pre.bibtex{background:var(--tile);border:1px solid var(--line);border-radius:10px;
+             padding:18px 20px;font:.85rem/1.55 var(--mono);overflow-x:auto;margin:0}
+  .bibhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .copy{font:inherit;font-size:.85rem;padding:5px 14px;border-radius:999px;border:1.5px solid var(--line);
+        background:var(--tile);color:var(--ink);cursor:pointer}
+  footer{padding-block:34px 46px;color:var(--muted);font-size:.9rem;text-align:center}
+</style>
 </head>
-
 <body>
-    <div class="container" id="main">
         <a href="..">Back to my projects</a>
-        <br><br>
-        <div class="row">
-            <h2 class="col-md-12 text-center">
-                <b>TEST</b></br>
-                
-                <!-- <small>
-                    Under review
-                </small> -->
-                <small>
-         
-            </small>
 
-            </h2>
+<header class="wrap">
+  <div class="eyebrow"></div>
+  <h1>Hierarchical Incremental Beta Splatting<br>for&nbsp;Online&nbsp;Reconstruction</h1>
+  <div class="venue">Accepted at WACV 2027</div>
+  <p class="authors"><a href="https://linus-franke.com/">Linus Franke</a></p>
+  <p class="affil">University of Würzburg</p>
+  <div class="logos"><img src="media/logo/uni_wuerzburg.png" alt="University of Würzburg" width="325" height="96"><img src="media/logo/vc_group.png" alt="Visual Computing Group" width="332" height="96"></div>
+  <div class="btnrow">
+    <!-- TODO: arXiv ID -->
+    <a class="btn" href="https://arxiv.org/abs/XXX"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 0h6l4 4v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm6 1v3h3z"/></svg>arXiv</a>
+    <a class="btn ghost" href="#video"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2l11 6-11 6z"/></svg>Video</a>
+    <!-- TODO: repository URL -->
+    <a class="btn ghost" aria-disabled="true" title="Code release coming soon" style="opacity:.55;cursor:default"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.9 1.2.9.7 1.3 1.9.9 2.4.7 0-.5.3-.9.5-1.1-1.8-.2-3.7-.9-3.7-4a3 3 0 0 1 .8-2.1c0-.2-.3-1 .1-2.1 0 0 .7-.2 2.2.8a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.4 1.1.1 1.9.1 2.1a3 3 0 0 1 .8 2.1c0 3.1-1.9 3.8-3.7 4 .3.3.6.8.6 1.6v2.3c0 .2.1.5.5.4A8 8 0 0 0 8 0z"/></svg>Code (soon)</a>
+    <a class="btn ghost" href="#bibtex"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1h10v14l-5-3-5 3z"/></svg>BibTeX</a>
+  </div>
+</header>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <figure>
+      <div class="frame"><video class="vid" src="media/teaser_garden.mp4" poster="media/teaser_garden.jpg" muted loop playsinline aria-label="Garden during online reconstruction: top view of the growing model and the current render"></video>
+        <span class="tag l">top view</span><span class="tag r">current render</span></div>
+      <figcaption class="c">Garden (MipNeRF360 dataset), reconstructed online from the raw image stream in about a minute on one GPU, without SfM preprocessing.
+      Left: the growing model and camera trajectory from above. Right: the model rendered from the current camera.</figcaption>
+    </figure>
+    <div class="stats">
+      <div class="stat"><b>+0.8&nbsp;dB</b><span>PSNR over i3DGS on MipNeRF360 (otf)</span></div>
+      <div class="stat"><b>−40%</b><span>reconstruction time vs. i3DGS on MipNeRF360 (otf)</span></div>
+      <div class="stat"><b>1.0–1.5&nbsp;s</b><span>from the first streamed frame to the first rendered image</span></div>
+      <div class="stat"><b>+0.8&nbsp;dB</b><span>PSNR over i3DGS on MipNeRF360 (otf)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap prose">
+    <h2>Abstract</h2>
+    <p>Online 3D Gaussian Splatting reconstructs a scene during capture: each keyframe spawns primitives once
+    and refines them for only a few dozen iterations, leaving little chance to fix poor initialization or
+    missing detail. Gaussians are also inherently soft, needing many overlaps for solid surfaces.</p>
+    <p>We present Hierarchical Incremental Beta Splatting (HIBS), which brings <b>beta kernels</b> to incremental
+    reconstruction. Their shape parameter interpolates between a soft, Gaussian-like profile and a flat-topped,
+    near-opaque surfel, acting as a <b>confidence dial</b> for geometry. Our confidence-aware spawning uses
+    geometric observability and multi-view depth agreement to initialize both opacity and shape, producing solid
+    primitives where geometry is verifiable and soft, correctable primitives where it is not. As online
+    densification, error-driven relocation recycles stale primitives into photometric-error hotspots. Bounded
+    beta kernel support enables exact tile culling and faster rasterization, and a closed-form, shape-preserving
+    merging formulation provides a level-of-detail (LOD) hierarchy for fast optimization and real-time rendering.
+    On Mip-NeRF&nbsp;360 in the on-the-fly protocol, HIBS improves PSNR by up to 0.8&nbsp;dB while reducing
+    optimization time by up to 40%.</p>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <h2>Video</h2>
+    <p class="lede"></p>
+    <figure>
+      <div class="frame yt"><iframe src="https://www.youtube-nocookie.com/embed/6AVpzSpsCBU?rel=0" title="HIBS: narrated overview video"
+        loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    </figure>
+  </div>
+</section>
+
+<section class="alt" id="method">
+  <div class="wrap">
+    <h2>Method</h2>
+    <p class="lede">Each frame is registered by online pose estimation. Each new keyframe then passes through four
+    stages: confidence-aware spawning, error-driven relocation, a 30-iteration optimization burst, and periodic
+    hierarchy merging. All primitives are beta kernels, <span class="math">α = o (1 − r²/9)<sup>β</sup></span>, with
+    bounded support and a shape parameter <span class="math">β</span> from soft (β&nbsp;=&nbsp;5) to solid and
+    flat-topped (β&nbsp;=&nbsp;1).</p>
+    <figure class="paper"><img src="media/fig/pipeline.png" alt="Pipeline: input stream with online pose estimation, confidence spawn, error relocate, optimize, hierarchy; the middle three stages run once per keyframe" width="1834" height="578" loading="lazy"></figure>
+
+    <div class="steps">
+      <div class="step top">
+        <div>
+          <div class="step-num">Stage 1</div>
+          <h3>Confidence-aware spawning</h3>
+          <p>New primitives are spawned where the model under-explains image detail. Two geometric cues set their
+          confidence: <b>depth observability</b> <span class="math">c<sub>z</sub></span>, from the triangulation
+          angle of the widest covisible baseline, and <b>depth agreement</b> <span class="math">c<sub>mvs</sub></span>
+          between guided multi-view stereo and an aligned monocular prior. Confident spawns are solid, uncertain ones
+          soft, so a wrong depth does not block gradients behind it.</p>
+          <div class="eq">c = (c<sub>z</sub> · c<sub>mvs</sub>)<sup>4</sup> &nbsp;→&nbsp; β: 5 → 1, &nbsp; o: 0.1 → 0.3</div>
         </div>
-           
+        <figure class="step-media">
+          <div class="frame"><video class="vid" data-src="media/anim_spawn.mp4" poster="media/anim_spawn.jpg" muted loop playsinline preload="none" aria-label="Animation of confidence-aware spawning"></video></div>
+          <figcaption>Observability rises as the baseline widens; agreement rises as the stereo depth enters the monocular prior's window. The spawn changes from soft (yellow) to solid (purple).</figcaption>
+          <div class="paper" style="margin-top:20px;padding:12px"><img src="media/fig/spawnconf_u2.png" alt="University2 keyframe with spawn candidates coloured by observability, MVS agreement, their product, and the resulting spawn opacity and shape" width="1194" height="513" loading="lazy"></div>
+          <figcaption>A University keyframe: distant trees have low observability, dense foliage low depth agreement. Only well-constrained surfaces spawn solid.</figcaption>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div>
+          <div class="step-num">Stage 2</div>
+          <h3>Error-driven relocation</h3>
+          <p>Online reconstruction has no time for clone-and-split densification. Instead, every keyframe moves
+          near-dead primitives onto live primitives in the top 10% of the current view's photometric error.</p>
+          <p class="note">Opacity and scale of the copies are adjusted so the render is unchanged; the following burst
+          separates them.</p>
+        </div>
+        <figure class="step-media">
+          <div class="frame"><video class="vid" data-src="media/anim_relocation.mp4" poster="media/anim_relocation.jpg" muted loop playsinline preload="none" aria-label="Relocation replay on a Garden keyframe"></video></div>
+          <figcaption>A Garden keyframe: render, error map, relocation from dead sources (rings) onto the hotspots, and the error after the burst.</figcaption>
+        </figure>
+      </div>
+
+      <div class="step top">
+        <div>
+          <div class="step-num">Stage 3</div>
+          <h3>A fused 30-iteration burst</h3>
+          <p>Each keyframe gets one 30-iteration burst. Bounded support gives exact tile culling, and a fused rasterizer
+          (as in <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a>) applies sparse Adam inside the backward pass, so per-primitive gradients are never written
+          to memory.</p>
+          <p>A lifetime controller hardens primitives that stay accurate across views and softens those with
+          view-inconsistent error, so <span class="math">β</span> tracks confidence over time.</p>
+        </div>
+        <figure class="step-media">
+          <div class="frame"><video class="vid" data-src="media/pipeline_scene.mp4" poster="media/pipeline_scene.jpg" muted loop playsinline preload="none" aria-label="Pipeline animation on the Garden scene"></video></div>
+          <figcaption>The keyframe loop on Garden: confident regions spawn solid (purple), uncertain ones soft (yellow), followed by relocation, the burst, and two levels of hierarchy merging.</figcaption>
+          <div class="rt" role="img" aria-label="Per-keyframe runtime on Garden: 353 ms with the fused rasterizer, 469 ms without; the optimization burst drops from 287 to 170 ms">
+            <div class="rt-row"><span class="who">fused (ours)</span>
+              <div class="rt-bar"><i class="c-io" style="width:2.79%"></i><i class="c-pose" style="width:24.83%"></i><i class="c-spawn" style="width:9.81%"></i><i class="c-burst" style="width:35.54%"></i><i class="c-hier" style="width:.56%"></i></div>
+              <span class="tot">353&nbsp;ms</span></div>
+            <div class="rt-row"><span class="who">unfused</span>
+              <div class="rt-bar"><i class="c-io" style="width:2.79%"></i><i class="c-pose" style="width:24.83%"></i><i class="c-spawn" style="width:9.81%"></i><i class="c-burst" style="width:59.79%"></i><i class="c-hier" style="width:.56%"></i></div>
+              <span class="tot">469&nbsp;ms</span></div>
+            <div class="rt-key"><span class="c-io">image &amp; features</span><span class="c-pose">pose</span><span class="c-spawn">spawning</span><span class="c-burst">burst</span><span class="c-hier">hierarchy</span></div>
+          </div>
+          <p class="note small" style="margin:0">Per-keyframe cost on Garden (track = 480&nbsp;ms). Fusing the optimizer
+          reduces the burst from 287 to 170&nbsp;ms. Over the nine otf scenes, beta kernels take 100&nbsp;s, Gaussians 130&nbsp;s.</p>
+        </figure>
+      </div>
+
+      <div class="step">
+        <div>
+          <div class="step-num">Stage 4</div>
+          <h3>Shape-preserving level of detail</h3>
+          <p>For large captures, groups of four sub-pixel primitives are merged into a parent and the fine levels are
+          moved to host memory. The KL-divergence merge of Gaussian hierarchies does not apply: for bounded kernels,
+          KL is infinite once child mass lies outside the parent.</p>
+          <p>Beta kernels have closed-form mass, covariance and kurtosis, and kurtosis is invertible in
+          <span class="math">β</span>. Moment matching thus gives the parent's center, extent, opacity and shape in
+          closed form.</p>
+        </div>
+        <figure class="step-media">
+          <div class="frame"><video class="vid" data-src="media/anim_merge.mp4" poster="media/anim_merge.jpg" muted loop playsinline preload="none" aria-label="Merging animation: Gaussians, beta KL-style, beta moment matching"></video>
+            <span class="tag t" style="left:2%">Gaussians</span><span class="tag t" style="left:36%">beta, KL-style</span><span class="tag t" style="left:70%">beta, ours</span></div>
+          <figcaption>Four children merged into one parent. KL-style merging of betas gives an undersized, too solid parent; moment matching preserves the footprint.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="live">
+  <div class="wrap wide">
+    <h2>Live reconstruction with a confidence field</h2>
+    <p class="lede">Left: the render during online reconstruction. Right: the shape field
+    <span class="math">β</span> as a confidence map. New regions spawn soft and solidify as views accumulate;
+    reflective and poorly observed regions stay soft.</p>
+    <div class="ctlrow"><span class="lab">Scene</span><div class="pills" role="group" aria-label="Scene" id="recon-pills"></div></div>
+    <figure>
+      <div class="frame"><video class="vid" id="recon-vid" data-src="media/recon_garden.mp4" poster="media/recon_garden.jpg" muted loop playsinline preload="none" aria-label="Live reconstruction: render and confidence field"></video>
+        <span class="tag l">render</span><span class="tag r">confidence field</span><span class="tag t" style="left:10px" id="recon-speed">real time</span><div class="halfline"></div></div>
+      <div class="cbar" aria-hidden="true"></div>
+      <div class="cbar-lab"><span>β = 5 · soft, uncertain</span><span>β = 1 · solid, confident</span></div>
+      <figcaption id="recon-cap" class="c"></figcaption>
+    </figure>
+
+    <div class="grid2" style="margin-top:44px">
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/hero_garden.mp4" poster="media/hero_garden.jpg" muted loop playsinline preload="none" aria-label="Finished Garden model along a novel orbit"></video>
+          <span class="tag l">render</span></div>
+        <figcaption>The finished Garden model along a novel orbit.</figcaption>
+      </figure>
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/conf_spiral.mp4" poster="media/conf_spiral.jpg" muted loop playsinline preload="none" aria-label="Confidence field of the finished Garden model along the same orbit"></video>
+          <span class="tag l">confidence field</span></div>
+        <figcaption>Its shape field along the same orbit. Most of the scene is solid; the reflective table centre stays soft.</figcaption>
+      </figure>
     </div>
 
+    <div style="margin-top:46px">
+      <h3>Better throughout the capture</h3>
+      <p class="muted" style="max-width:760px">Mean PSNR over the test views registered so far, during reconstruction.
+      HIBS leads i3DGS from shortly after bootstrap to the end, and earlier test views keep improving.</p>
+      <figure class="paper" style="max-width:1100px"><img src="media/fig/trajectory.png" alt="Mean test PSNR versus fraction of keyframes registered on MipNeRF360, TUM and StaticHikes; ours above i3DGS throughout" width="1406" height="420" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="comparisons">
+  <div class="wrap wide">
+    <h2>Comparisons</h2>
+    <p class="lede">The same novel camera path, rendered from each method's reconstruction of the same input. Ours is
+    on the left. Online: <a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a> and <a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly NVS</a>. Offline references: <a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> poses with <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> or <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a>
+    (7K iterations).</p>
+    <div class="ctl">
+      <div class="ctlrow"><span class="lab">Scene</span><div class="pills" role="group" aria-label="Scene" id="cmp-scenes"></div></div>
+      <div class="ctlrow"><span class="lab">Baseline</span><div class="pills sub" role="group" aria-label="Baseline" id="cmp-bases"></div></div>
+    </div>
+    <figure style="margin-top:6px">
+      <div class="frame"><video class="vid" id="cmp-vid" muted loop playsinline preload="none" aria-label="Side-by-side comparison video"></video>
+        <span class="tag l">Ours</span><span class="tag r" id="cmp-tag"></span><div class="halfline"></div></div>
+      <figcaption><span id="cmp-cap"></span> <span class="small">Paths are mapped into each method's world frame; On-the-fly NVS drifts slightly, so its viewpoint can differ.</span></figcaption>
+    </figure>
+
+    <h3 style="margin-top:54px">Held-out test views</h3>
+    <p class="muted" style="max-width:760px">Drag to compare. Test views from the paper's comparison figures, with ground truth.</p>
+    <div class="heldout">
+      <div class="ctl">
+        <div class="ctlrow"><span class="lab">Protocol</span><div class="pills" role="group" aria-label="Protocol" id="sl-sets"></div></div>
+        <div class="ctlrow"><span class="lab">Scene</span><div class="pills sub" role="group" aria-label="Scene" id="sl-scenes"></div></div>
+        <div class="ctlrow"><span class="lab">Compare with</span><div class="pills sub" role="group" aria-label="Compare against" id="sl-bases"></div></div>
+      </div>
+      <div class="slider-wrap" id="sl-wrap">
+        <div class="slider" id="slider">
+          <img id="sl-under" alt="" src="media/stills/counter_i3dgs.jpg" width="1400" height="933">
+          <div class="top"><img id="sl-over" alt="" src="media/stills/counter_ours.jpg"></div>
+          <div class="bar"></div>
+          <input type="range" min="0" max="100" value="50" step="1" id="sl-range" aria-label="Comparison divider position">
+          <div class="knob" aria-hidden="true">◀▶</div>
+          <span class="tag l">Ours</span><span class="tag r" id="sl-tag">i3DGS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="city">
+  <div class="wrap wide">
+    <h2>City-scale, online</h2>
+    <p class="lede">The hierarchy keeps kilometre-scale captures within GPU memory during reconstruction, with
+    inactive levels in host memory. On <a class="cite" href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">SmallCity</a>, a driving capture, the active model grows from 0.85&nbsp;M to
+    1.32&nbsp;M primitives at about 10&nbsp;GB peak GPU memory; HIBS reaches 24.45&nbsp;dB in under 4&nbsp;minutes
+    (i3DGS 23.56, offline Octree-GS 24.18 after about an hour).</p>
+    <div class="cityrow">
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/citywalk.mp4" poster="media/citywalk.jpg" muted loop playsinline preload="none" aria-label="CityWalk reconstruction flythrough"></video></div>
+        <figcaption>CityWalk, rendered from the 31&nbsp;M-node hierarchy along part of the capture trajectory.</figcaption>
+      </figure>
+      <div>
+        <h3><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">CityWalk</a></h3>
+        <p class="muted">A long walking capture, reconstructed online in 43&nbsp;minutes.</p>
+        <dl class="facts">
+          <div><dt>HIBS (ours)</dt><dd><b>25.81&nbsp;dB</b> · 43&nbsp;min</dd></div>
+          <div><dt><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></dt><dd>22.03&nbsp;dB · 45&nbsp;min</dd></div>
+          <div><dt><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly NVS</a></dt><dd>21.71&nbsp;dB · 30&nbsp;min</dd></div>
+          <div><dt><a class="cite" href="https://city-super.github.io/octree-gs/" target="_blank" rel="noopener">Octree-GS</a> (offline)</dt><dd>17.33&nbsp;dB · ~2.5&nbsp;h</dd></div>
+          <div><dt><a class="cite" href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">H3DGS</a> (offline)</dt><dd>11.78&nbsp;dB · ~20&nbsp;h</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <h3 style="margin-top:50px">A hierarchy that degrades gracefully</h3>
+    <div class="grid2">
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/lod_citywalk.mp4" poster="media/lod_citywalk.jpg" muted loop playsinline preload="none" aria-label="CityWalk at full detail versus a coarse level-of-detail cut"></video>
+          <span class="tag l">full detail · 12.1&nbsp;M active</span><span class="tag r">coarse cut · 5.6&nbsp;M active</span><div class="halfline"></div></div>
+        <figcaption>CityWalk, novel path: a coarser cut renders with 54% fewer active primitives and no visible change.</figcaption>
+      </figure>
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/lod_smallcity.mp4" poster="media/lod_smallcity.jpg" muted loop playsinline preload="none" aria-label="Level-of-detail sweep: moment merge versus KL-style merge"></video>
+          <span class="tag l">moment merge (ours)</span><span class="tag r">KL-style merge</span><div class="halfline"></div></div>
+        <figcaption>The cut swept coarse and back at equal primitive budgets. KL-style parents smear into solid blobs; moment-matched parents keep footprint and shape.</figcaption>
+      </figure>
+    </div>
+    <div class="grid2" style="margin-top:26px">
+      <figure>
+        <div class="frame"><video class="vid" data-src="media/growth_merge.mp4" poster="media/growth_merge.jpg" muted loop playsinline preload="none" aria-label="Fixed street view during training: moment merge versus KL-style merge"></video>
+          <span class="tag l">moment merge (ours)</span><span class="tag r">KL-style merge</span><div class="halfline"></div></div>
+        <figcaption>A fixed street view during training. Each merge event degrades the KL-style model; the moment-matched model is unaffected.</figcaption>
+      </figure>
+      <div>
+        <p style="margin-top:4px;font-size:.95rem">Without the moment merge, PSNR drops by <b>0.67&nbsp;dB</b> on SmallCity
+        and <b>2.27&nbsp;dB</b> on CityWalk, which needs more hierarchy levels. Two further components keep late,
+        low-resolution views from degrading regions that are already well reconstructed:</p>
+        <ul class="muted" style="padding-left:1.2em;margin:0;font-size:.95rem">
+          <li><b style="color:var(--ink)">Resolution-aware weighting.</b> Views that see a primitive at under a quarter of its finest observed resolution spawn and update it at reduced weight.</li>
+          <li><b style="color:var(--ink)">Error-based repair.</b> A final 1000-iteration pass on the training views whose error grew most counters recency bias.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="results">
+  <div class="wrap wide">
+    <h2>Results</h2>
+    <p class="lede">Ours is averaged over five runs. Times are wall-clock on one RTX&nbsp;5090, including pose
+    estimation.</p>
+    <div class="pills" role="group" aria-label="Table" id="tbl-tabs">
+      <button type="button" data-panel="t-otf" aria-pressed="true">On-the-fly protocol</button>
+      <button type="button" data-panel="t-gs" aria-pressed="false">3DGS benchmark</button>
+      <button type="button" data-panel="t-large" aria-pressed="false">Large scale</button>
+      <button type="button" data-panel="t-more" aria-pressed="false">Other protocols</button>
+      <button type="button" data-panel="t-abl" aria-pressed="false">Ablations</button>
+    </div>
+
+    <div class="panel" id="t-otf">
+      <div class="tblwrap"><table>
+        <thead>
+          <tr><th rowspan="2">Method</th><th colspan="4" class="grp"><a class="cite" href="https://cvg.cit.tum.de/data/datasets/rgbd-dataset" target="_blank" rel="noopener">TUM</a></th><th colspan="4" class="grp"><a class="cite" href="https://jonbarron.info/mipnerf360/" target="_blank" rel="noopener">MipNeRF360</a> (otf)</th><th colspan="4" class="grp"><a class="cite" href="https://localrf.github.io/" target="_blank" rel="noopener">StaticHikes</a></th></tr>
+          <tr><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ref"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> + <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> (7K)</td><td class="grp">22.73</td><td>0.842</td><td>0.214</td><td>1:50</td><td class="grp">27.75</td><td>0.863</td><td>0.232</td><td>4:34</td><td class="grp">20.36</td><td>0.538</td><td>0.470</td><td>59:22</td></tr>
+          <tr class="ref sep"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> + <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a> (7K)</td><td class="grp">23.08</td><td>0.845</td><td>0.207</td><td>1:42</td><td class="grp">27.81</td><td>0.876</td><td>0.210</td><td>4:22</td><td class="grp">20.57</td><td>0.547</td><td>0.459</td><td>59:38</td></tr>
+          <tr><td><a class="cite" href="https://rmurai.co.uk/projects/GaussianSplattingSLAM/" target="_blank" rel="noopener">MonoGS</a><sup>†</sup></td><td class="grp">16.60</td><td>0.682</td><td>0.381</td><td>~15&nbsp;min</td><td class="grp">14.46</td><td>0.436</td><td>0.663</td><td>~4&nbsp;min</td><td class="grp">15.46</td><td>0.301</td><td>0.659</td><td>~9&nbsp;min</td></tr>
+          <tr><td><a class="cite" href="https://3dagentworld.github.io/S3PO-GS/" target="_blank" rel="noopener">S3PO-GS</a> w/ refinement<sup>†</sup></td><td class="grp">21.88</td><td>0.777</td><td>0.309</td><td>~1&nbsp;h</td><td class="grp">19.82</td><td>0.553</td><td>0.576</td><td>~20&nbsp;min</td><td class="grp">18.09</td><td>0.368</td><td>0.611</td><td>~50&nbsp;min</td></tr>
+          <tr><td><a class="cite" href="https://linjohnss.github.io/longsplat/" target="_blank" rel="noopener">LongSplat</a><sup>†</sup></td><td class="grp f">26.51</td><td class="f">0.875</td><td class="s">0.176</td><td>~1.5&nbsp;h</td><td class="grp">23.63</td><td>0.657</td><td>0.415</td><td>~2&nbsp;h</td><td class="grp">20.05</td><td>0.461</td><td>0.481</td><td>~20&nbsp;h</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly NVS</a></td><td class="grp">23.37</td><td>0.824</td><td>0.241</td><td class="f">1:00</td><td class="grp">22.51</td><td>0.671</td><td>0.370</td><td class="s">1:45</td><td class="grp">21.14</td><td>0.619</td><td>0.338</td><td class="s">2:08</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></td><td class="grp">25.36</td><td>0.858</td><td>0.188</td><td class="s">1:24</td><td class="grp s">26.66</td><td class="s">0.835</td><td class="s">0.224</td><td>2:09</td><td class="grp s">22.17</td><td class="s">0.699</td><td class="s">0.269</td><td>2:53</td></tr>
+          <tr class="ours"><td>HIBS (ours)</td><td class="grp s">25.94</td><td class="s">0.868</td><td class="f">0.175</td><td>1:44</td><td class="grp f">27.47</td><td class="f">0.852</td><td class="f">0.204</td><td class="f">1:18</td><td class="grp f">22.49</td><td class="f">0.710</td><td class="f">0.259</td><td class="f">2:02</td></tr>
+        </tbody>
+      </table></div>
+      <div class="legend"><span><i style="background:var(--first)"></i>best pose-free</span><span><i style="background:var(--second)"></i>second best pose-free</span><span>Grey rows: offline references (times include GLOMAP)</span></div>
+      <p class="tblnote">† Numbers from i3DGS, times roughly scaled to our setup. Reduced-resolution and 448×448
+      protocols (DROID-Splat, CF-3DGS, ARTDECO, AnySplat, DepthAnything3) are under Other protocols.</p>
+    </div>
+
+    <div class="panel" id="t-gs" hidden>
+      <div class="tblwrap"><table>
+        <thead>
+          <tr><th rowspan="2">Method</th><th colspan="4" class="grp"><a class="cite" href="https://jonbarron.info/mipnerf360/" target="_blank" rel="noopener">MipNeRF360</a></th><th colspan="4" class="grp"><a class="cite" href="https://www.tanksandtemples.org/" target="_blank" rel="noopener">Tanks &amp; Temples</a></th><th colspan="4" class="grp"><a class="cite" href="http://visual.cs.ucl.ac.uk/pubs/deepblending/" target="_blank" rel="noopener">Deep Blending</a></th></tr>
+          <tr><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ref"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> exh. + <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> (30K)</td><td class="grp">28.09</td><td>0.822</td><td>0.222</td><td>12:34</td><td class="grp">22.18</td><td>0.818</td><td>0.209</td><td>11:14</td><td class="grp">30.49</td><td>0.915</td><td>0.250</td><td>10:11</td></tr>
+          <tr class="ref"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> exh. + <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a> (30K)</td><td class="grp">27.66</td><td>0.818</td><td>0.251</td><td>9:01</td><td class="grp">20.45</td><td>0.781</td><td>0.274</td><td>7:03</td><td class="grp">29.78</td><td>0.908</td><td>0.306</td><td>7:14</td></tr>
+          <tr class="ref"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> exh. + <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> (7K)</td><td class="grp">25.92</td><td>0.750</td><td>0.308</td><td>6:21</td><td class="grp">19.72</td><td>0.710</td><td>0.347</td><td>5:36</td><td class="grp">26.85</td><td>0.861</td><td>0.350</td><td>4:56</td></tr>
+          <tr class="ref sep"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> exh. + <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a> (7K)</td><td class="grp">25.36</td><td>0.740</td><td>0.347</td><td>5:34</td><td class="grp">19.07</td><td>0.712</td><td>0.373</td><td>4:48</td><td class="grp">28.91</td><td>0.891</td><td>0.358</td><td>4:17</td></tr>
+          <tr><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> seq. + <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> (30K)</td><td class="grp f">25.90</td><td>0.703</td><td>0.333</td><td>9:07</td><td class="grp f">23.31</td><td class="f">0.831</td><td class="f">0.190</td><td>8:27</td><td class="grp">×</td><td>×</td><td>×</td><td>×</td></tr>
+          <tr><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> seq. + <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a> (30K)</td><td class="grp s">25.53</td><td>0.702</td><td>0.356</td><td>5:29</td><td class="grp">22.17</td><td>0.802</td><td>0.250</td><td>4:21</td><td class="grp">×</td><td>×</td><td>×</td><td>×</td></tr>
+          <tr><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> seq. + <a class="cite" href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Beta-Splatting</a> (7K)</td><td class="grp">24.05</td><td>0.656</td><td>0.396</td><td>3:17</td><td class="grp">20.81</td><td>0.733</td><td>0.321</td><td>2:55</td><td class="grp">×</td><td>×</td><td>×</td><td>×</td></tr>
+          <tr class="sep"><td><a class="cite" href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">GLOMAP</a> seq. + <a class="cite" href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS</a> (7K)</td><td class="grp">24.57</td><td>0.678</td><td>0.411</td><td>2:29</td><td class="grp">20.79</td><td>0.742</td><td>0.343</td><td>2:10</td><td class="grp">×</td><td>×</td><td>×</td><td>×</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></td><td class="grp">24.75</td><td class="s">0.721</td><td class="s">0.280</td><td class="s">1:59</td><td class="grp">22.08</td><td>0.783</td><td>0.226</td><td class="s">1:25</td><td class="grp f">27.16</td><td class="f">0.856</td><td class="f">0.285</td><td class="s">2:03</td></tr>
+          <tr class="ours"><td>HIBS (ours)</td><td class="grp">25.19</td><td class="f">0.731</td><td class="f">0.264</td><td class="f">1:17</td><td class="grp s">23.00</td><td class="s">0.803</td><td class="s">0.200</td><td class="f">1:18</td><td class="grp s">26.49</td><td class="s">0.847</td><td class="s">0.295</td><td class="f">1:22</td></tr>
+        </tbody>
+      </table></div>
+      <div class="legend"><span><i style="background:var(--first)"></i>best</span><span><i style="background:var(--second)"></i>second best</span><span>Grey rows: exhaustive-matching references, not ranked</span><span>× GLOMAP sequential matching fails on Deep Blending</span></div>
+      <p class="tblnote">Offline times include GLOMAP (sequential: 1:52 on MipNeRF360, 1:42 on Tanks &amp; Temples;
+      exhaustive: 4:53, 4:22, 3:42). Test frames that sequential GLOMAP fails to register (bicycle, flowers, stump) are
+      excluded from its averages. With SH instead of spherical-beta colours, ours gains about 0.3&nbsp;dB on Deep Blending.</p>
+    </div>
+
+    <div class="panel" id="t-large" hidden>
+      <div class="tblwrap"><table>
+        <thead>
+          <tr><th rowspan="2">Method</th><th colspan="4" class="grp"><a class="cite" href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">SmallCity</a></th><th colspan="4" class="grp"><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">CityWalk</a></th></tr>
+          <tr><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">H3DGS</a> (offline)</td><td class="grp">21.17</td><td>0.679</td><td class="s">0.285</td><td>~2.5&nbsp;h</td><td class="grp">11.78</td><td>0.557</td><td>0.560</td><td>~20&nbsp;h</td></tr>
+          <tr class="sep"><td><a class="cite" href="https://city-super.github.io/octree-gs/" target="_blank" rel="noopener">Octree-GS</a> (offline)</td><td class="grp s">24.18</td><td class="f">0.831</td><td class="f">0.273</td><td>~1&nbsp;h</td><td class="grp">17.33</td><td>0.638</td><td>0.520</td><td>~2.5&nbsp;h</td></tr>
+          <tr><td><a class="cite" href="https://3dagentworld.github.io/S3PO-GS/" target="_blank" rel="noopener">S3PO-GS</a></td><td class="grp">19.71</td><td>0.652</td><td>0.462</td><td>~0.7&nbsp;h</td><td class="grp">10.72</td><td>0.439</td><td>0.579</td><td>~5.5&nbsp;h</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly NVS</a></td><td class="grp">23.59</td><td>0.789</td><td>0.323</td><td class="f">2:21</td><td class="grp">21.71</td><td>0.712</td><td>0.395</td><td class="f">29:35</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></td><td class="grp">23.56</td><td>0.800</td><td>0.302</td><td class="s">2:54</td><td class="grp s">22.03</td><td class="s">0.772</td><td class="s">0.336</td><td>45:20</td></tr>
+          <tr class="ours"><td>HIBS (ours)</td><td class="grp f">24.45</td><td class="s">0.808</td><td class="s">0.285</td><td>3:47</td><td class="grp f">25.81</td><td class="f">0.857</td><td class="f">0.239</td><td class="s">42:43</td></tr>
+        </tbody>
+      </table></div>
+      <div class="legend"><span><i style="background:var(--first)"></i>best</span><span><i style="background:var(--second)"></i>second best</span></div>
+      <p class="tblnote">Offline times include COLMAP. Image metrics of the baselines are from i3DGS; exact times were
+      measured on our machine. S3PO-GS includes refinement.</p>
+    </div>
+
+    <div class="panel" id="t-more" hidden>
+      <h3 style="font-size:1.05rem">Reduced resolution</h3>
+      <div class="tblwrap"><table>
+        <thead>
+          <tr><th rowspan="2">TUM 448×336, others 640&nbsp;px wide</th><th colspan="4" class="grp"><a class="cite" href="https://cvg.cit.tum.de/data/datasets/rgbd-dataset" target="_blank" rel="noopener">TUM</a></th><th colspan="4" class="grp"><a class="cite" href="https://jonbarron.info/mipnerf360/" target="_blank" rel="noopener">MipNeRF360</a> (otf)</th><th colspan="4" class="grp"><a class="cite" href="https://localrf.github.io/" target="_blank" rel="noopener">StaticHikes</a></th></tr>
+          <tr><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a class="cite" href="https://github.com/ChenHoy/DROID-Splat" target="_blank" rel="noopener">DROID-Splat</a><sup>†</sup></td><td class="grp">19.49</td><td>0.721</td><td>0.325</td><td>~5&nbsp;min</td><td class="grp">25.87</td><td>0.776</td><td>0.258</td><td>~9&nbsp;min</td><td class="grp">19.65</td><td>0.470</td><td>0.506</td><td>~8&nbsp;min</td></tr>
+          <tr><td><a class="cite" href="https://oasisyang.github.io/colmap-free-3dgs/" target="_blank" rel="noopener">CF-3DGS</a><sup>†</sup></td><td class="grp">15.05</td><td>0.578</td><td>0.405</td><td>~1&nbsp;h</td><td class="grp">13.52</td><td>0.295</td><td>0.621</td><td>~1&nbsp;h</td><td class="grp">15.21</td><td>0.301</td><td>0.560</td><td>~7&nbsp;h</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly NVS</a><sup>†</sup></td><td class="grp">22.45</td><td>0.815</td><td>0.225</td><td>~50&nbsp;s</td><td class="grp">25.80</td><td>0.834</td><td>0.182</td><td>~40&nbsp;s</td><td class="grp">21.93</td><td>0.673</td><td class="f">0.270</td><td>~1&nbsp;min</td></tr>
+          <tr><td><a class="cite" href="https://city-super.github.io/artdeco/" target="_blank" rel="noopener">ARTDECO</a></td><td class="grp">23.03</td><td>0.662</td><td>0.343</td><td>4:56</td><td class="grp">22.97</td><td>0.841</td><td>0.210</td><td>14:07</td><td class="grp">21.28</td><td>0.555</td><td>0.380</td><td>13:05</td></tr>
+          <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></td><td class="grp">22.51</td><td>0.836</td><td>0.189</td><td class="f">0:58</td><td class="grp">27.16</td><td>0.849</td><td>0.165</td><td class="f">0:43</td><td class="grp f">22.24</td><td class="f">0.683</td><td>0.297</td><td class="f">1:04</td></tr>
+          <tr class="ours"><td>HIBS (ours)</td><td class="grp f">25.14</td><td class="f">0.872</td><td class="f">0.148</td><td>1:26</td><td class="grp f">27.73</td><td class="f">0.867</td><td class="f">0.144</td><td>0:49</td><td class="grp">22.17</td><td>0.679</td><td>0.309</td><td>1:12</td></tr>
+        </tbody>
+      </table></div>
+      <p class="tblnote">At reduced resolution, HIBS stays best on TUM and MipNeRF360; the speed advantage disappears,
+      and on StaticHikes it falls slightly behind i3DGS.</p>
+
+      <div class="grid2" style="margin-top:26px;align-items:start">
+        <div>
+          <h3 style="font-size:1.05rem">448×448 input</h3>
+          <div class="tblwrap"><table>
+            <thead>
+              <tr><th>MipNeRF360 (otf)</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time↓</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><a class="cite" href="https://city-super.github.io/anysplat/" target="_blank" rel="noopener">AnySplat</a><sup>†</sup></td><td class="grp">18.05</td><td>0.430</td><td>0.390</td><td>~20&nbsp;s</td></tr>
+              <tr><td><a class="cite" href="https://city-super.github.io/anysplat/" target="_blank" rel="noopener">AnySplat</a> + refinement<sup>†</sup></td><td class="grp">21.53</td><td>0.600</td><td>0.300</td><td>~2&nbsp;min</td></tr>
+              <tr><td><a class="cite" href="https://depth-anything-3.github.io/" target="_blank" rel="noopener">DepthAnything3</a> (Gaussian head)</td><td class="grp">19.88</td><td>0.487</td><td>0.338</td><td class="f">0:17</td></tr>
+              <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a></td><td class="grp">26.51</td><td class="f">0.845</td><td>0.173</td><td>0:38</td></tr>
+              <tr class="ours"><td>HIBS (ours)</td><td class="grp f">26.56</td><td>0.842</td><td class="f">0.166</td><td>0:46</td></tr>
+            </tbody>
+          </table></div>
+          <p class="tblnote">Feed-forward methods are fast but at least 5&nbsp;dB lower.</p>
+        </div>
+        <div>
+          <h3 style="font-size:1.05rem">Pose accuracy on TUM</h3>
+          <div class="tblwrap"><table>
+            <thead>
+              <tr><th>Scene</th><th>Method</th><th class="grp">ATE&nbsp;%↓</th><th>R.APE&nbsp;°↓</th><th>T.RPE&nbsp;%↓</th><th>R.RPE&nbsp;°↓</th></tr>
+            </thead>
+            <tbody>
+              <tr class="ours"><td>fr1/desk</td><td>Ours</td><td class="grp">0.55</td><td>1.90</td><td>0.344</td><td>0.644</td></tr>
+              <tr class="sep"><td></td><td>i3DGS</td><td class="grp f">0.47</td><td class="f">1.42</td><td class="f">0.314</td><td class="f">0.548</td></tr>
+              <tr class="ours"><td>fr2/xyz</td><td>Ours</td><td class="grp f">0.33</td><td class="f">0.41</td><td class="f">0.178</td><td class="f">0.128</td></tr>
+              <tr class="sep"><td></td><td>i3DGS</td><td class="grp">0.37</td><td>0.42</td><td>0.185</td><td>0.133</td></tr>
+              <tr class="ours"><td>fr3/office</td><td>Ours</td><td class="grp f">0.32</td><td class="f">0.94</td><td class="f">0.127</td><td class="f">0.326</td></tr>
+              <tr><td></td><td>i3DGS</td><td class="grp">0.38</td><td>1.02</td><td>0.150</td><td>0.347</td></tr>
+            </tbody>
+          </table></div>
+          <p class="tblnote">Against COLMAP pseudo ground truth. fr1/desk has motion blur and little early parallax; a
+          wider bootstrap pool reduces its ATE to 0.51% at 1.1&nbsp;s extra latency.</p>
+        </div>
+      </div>
+      <div class="legend"><span><i style="background:var(--first)"></i>best</span><span>† Numbers from i3DGS, times roughly scaled to our setup</span></div>
+    </div>
+
+    <div class="panel" id="t-abl" hidden>
+      <div class="grid2" style="align-items:start">
+        <div>
+          <div class="tblwrap"><table>
+            <thead>
+              <tr><th>Leave-one-out (9 otf scenes)</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+              <tr class="ours"><td>Full (ours)</td><td class="grp f">25.30</td><td class="f">0.810</td><td class="f">0.213</td><td>101&nbsp;s</td></tr>
+              <tr><td>w/o spherical-beta lobes (→ SH)</td><td class="grp">25.12</td><td>0.807</td><td>0.214</td><td>106&nbsp;s</td></tr>
+              <tr><td>DBS lobe-init prior</td><td class="grp">25.19</td><td>0.809</td><td>0.214</td><td>100&nbsp;s</td></tr>
+              <tr><td>w/o confidence spawning</td><td class="grp">25.14</td><td>0.808</td><td>0.215</td><td>99&nbsp;s</td></tr>
+              <tr><td>w/o solidification</td><td class="grp">25.15</td><td>0.807</td><td>0.216</td><td>100&nbsp;s</td></tr>
+              <tr><td>w/o error relocation</td><td class="grp">25.09</td><td>0.804</td><td>0.219</td><td>95&nbsp;s</td></tr>
+              <tr><td>w/o regularizers</td><td class="grp">24.98</td><td>0.803</td><td>0.216</td><td>108&nbsp;s</td></tr>
+              <tr><td>w/o fused rasterizer</td><td class="grp">25.24</td><td>0.809</td><td>0.214</td><td>120&nbsp;s</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div>
+          <div class="tblwrap"><table>
+            <thead>
+              <tr><th>Kernel (9 otf scenes)</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><a class="cite" href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">i3DGS</a> (no confidence)</td><td class="grp">24.73</td><td>0.797</td><td>0.227</td><td>129&nbsp;s</td></tr>
+              <tr><td>Gaussian + <i>o</i><sub>spawn</sub></td><td class="grp">25.09</td><td>0.808</td><td>0.214</td><td>130&nbsp;s</td></tr>
+              <tr><td>β frozen at 4 + <i>o</i><sub>spawn</sub></td><td class="grp">25.06</td><td>0.806</td><td>0.217</td><td>100&nbsp;s</td></tr>
+              <tr><td>learnable β + <i>o</i><sub>spawn</sub></td><td class="grp">25.11</td><td>0.807</td><td>0.215</td><td>100&nbsp;s</td></tr>
+              <tr><td>+ β<sub>spawn</sub></td><td class="grp">25.15</td><td>0.807</td><td>0.216</td><td>100&nbsp;s</td></tr>
+              <tr class="ours"><td>+ solidification (full)</td><td class="grp f">25.30</td><td class="f">0.810</td><td class="f">0.213</td><td>101&nbsp;s</td></tr>
+            </tbody>
+          </table></div>
+          <div class="tblwrap" style="margin-top:18px"><table>
+            <thead>
+              <tr><th rowspan="2">Large scale</th><th colspan="3" class="grp"><a class="cite" href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">SmallCity</a></th><th colspan="3" class="grp"><a class="cite" href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">CityWalk</a></th></tr>
+              <tr><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th><th class="grp">PSNR↑</th><th>SSIM↑</th><th>LPIPS↓</th></tr>
+            </thead>
+            <tbody>
+              <tr class="ours"><td>Full (ours)</td><td class="grp f">24.45</td><td class="f">0.808</td><td class="f">0.285</td><td class="grp f">25.81</td><td class="f">0.857</td><td class="f">0.239</td></tr>
+              <tr><td>w/o moment merge</td><td class="grp">23.78</td><td>0.800</td><td>0.299</td><td class="grp">23.54</td><td>0.833</td><td>0.262</td></tr>
+              <tr><td>w/o error repair</td><td class="grp">23.60</td><td>0.798</td><td>0.295</td><td class="grp">23.44</td><td>0.843</td><td>0.244</td></tr>
+              <tr><td>w/o res-weighting</td><td class="grp">24.12</td><td>0.805</td><td>0.294</td><td class="grp">22.93</td><td>0.812</td><td>0.294</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <p class="tblnote">Removing any component lowers quality. The fused rasterizer saves 16% runtime; beta kernels
+      are about 23% faster than Gaussians at equal or better quality.</p>
+    </div>
+  </div>
+</section>
+
+<section id="references">
+  <div class="wrap wide">
+    <h2>References</h2>
+    <ul class="refs">
+      <li><span class="rk">Mip-NeRF 360</span><span><a href="https://jonbarron.info/mipnerf360/" target="_blank" rel="noopener">Mip-NeRF 360: Unbounded Anti-Aliased Neural Radiance Fields</a><span class="by">J. T. Barron, B. Mildenhall, D. Verbin, P. P. Srinivasan, P. Hedman. CVPR 2022.</span></span></li>
+      <li><span class="rk">S3PO-GS</span><span><a href="https://3dagentworld.github.io/S3PO-GS/" target="_blank" rel="noopener">Outdoor Monocular SLAM with Global Scale-Consistent 3D Gaussian Pointmaps</a><span class="by">C. Cheng, S. Yu, Z. Wang, Y. Zhou, H. Wang. ICCV 2025.</span></span></li>
+      <li><span class="rk">CF-3DGS</span><span><a href="https://oasisyang.github.io/colmap-free-3dgs/" target="_blank" rel="noopener">COLMAP-Free 3D Gaussian Splatting</a><span class="by">Y. Fu, S. Liu, A. Kulkarni, J. Kautz, A. A. Efros, X. Wang. CVPR 2024.</span></span></li>
+      <li><span class="rk">Faster-GS</span><span><a href="https://fhahlbohm.github.io/faster-gaussian-splatting/" target="_blank" rel="noopener">Faster-GS: Analyzing and Improving Gaussian Splatting Optimization</a><span class="by">F. Hahlbohm, L. Franke, M. Eisemann, M. Magnor. CVPR 2026.</span></span></li>
+      <li><span class="rk">Deep Blending</span><span><a href="http://visual.cs.ucl.ac.uk/pubs/deepblending/" target="_blank" rel="noopener">Deep Blending for Free-Viewpoint Image-Based Rendering</a><span class="by">P. Hedman, J. Philip, T. Price, J.-M. Frahm, G. Drettakis, G. Brostow. ACM TOG 2018.</span></span></li>
+      <li><span class="rk">DROID-Splat</span><span><a href="https://github.com/ChenHoy/DROID-Splat" target="_blank" rel="noopener">DROID-Splat: Combining End-to-End SLAM with 3D Gaussian Splatting</a><span class="by">C. Homeyer, L. Begiristain, C. Schnörr. arXiv 2024.</span></span></li>
+      <li><span class="rk">AnySplat</span><span><a href="https://city-super.github.io/anysplat/" target="_blank" rel="noopener">AnySplat: Feed-forward 3D Gaussian Splatting from Unconstrained Views</a><span class="by">L. Jiang, Y. Mao, L. Xu, et al. ACM TOG 2025.</span></span></li>
+      <li><span class="rk">3DGS</span><span><a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/" target="_blank" rel="noopener">3D Gaussian Splatting for Real-Time Radiance Field Rendering</a><span class="by">B. Kerbl, G. Kopanas, T. Leimkühler, G. Drettakis. ACM TOG 2023.</span></span></li>
+      <li><span class="rk">H3DGS<span class="ds">SmallCity</span></span><span><a href="https://repo-sam.inria.fr/fungraph/hierarchical-3d-gaussians/" target="_blank" rel="noopener">A Hierarchical 3D Gaussian Representation for Real-Time Rendering of Very Large Datasets</a><span class="by">B. Kerbl, A. Meuleman, G. Kopanas, M. Wimmer, A. Lanvin, G. Drettakis. ACM TOG 2024.</span></span></li>
+      <li><span class="rk">Tanks &amp; Temples</span><span><a href="https://www.tanksandtemples.org/" target="_blank" rel="noopener">Tanks and Temples: Benchmarking Large-Scale Scene Reconstruction</a><span class="by">A. Knapitsch, J. Park, Q.-Y. Zhou, V. Koltun. ACM TOG 2017.</span></span></li>
+      <li><span class="rk">ARTDECO</span><span><a href="https://city-super.github.io/artdeco/" target="_blank" rel="noopener">ARTDECO: Toward High-Fidelity On-the-Fly Reconstruction with Hierarchical Gaussian Structure and Feed-Forward Guidance</a><span class="by">G. Li, K. Ren, L. Xu, et al. ICLR 2026.</span></span></li>
+      <li><span class="rk">Depth Anything 3</span><span><a href="https://depth-anything-3.github.io/" target="_blank" rel="noopener">Depth Anything 3: Recovering the Visual Space from Any Views</a><span class="by">H. Lin, S. Chen, J. H. Liew, et al. ICLR 2026.</span></span></li>
+      <li><span class="rk">LongSplat</span><span><a href="https://linjohnss.github.io/longsplat/" target="_blank" rel="noopener">LongSplat: Robust Unposed 3D Gaussian Splatting for Casual Long Videos</a><span class="by">C.-Y. Lin, C. Sun, F.-E. Yang, M.-H. Chen, Y.-Y. Lin, Y.-L. Liu. ICCV 2025.</span></span></li>
+      <li><span class="rk">Beta-Splatting</span><span><a href="https://rongliu-leo.github.io/beta-splatting/" target="_blank" rel="noopener">Deformable Beta Splatting</a><span class="by">R. Liu, D. Sun, M. Chen, Y. Wang, A. Feng. SIGGRAPH 2025.</span></span></li>
+      <li><span class="rk">MonoGS</span><span><a href="https://rmurai.co.uk/projects/GaussianSplattingSLAM/" target="_blank" rel="noopener">Gaussian Splatting SLAM</a><span class="by">H. Matsuki, R. Murai, P. H. J. Kelly, A. J. Davison. CVPR 2024.</span></span></li>
+      <li><span class="rk">LocalRF<span class="ds">StaticHikes</span></span><span><a href="https://localrf.github.io/" target="_blank" rel="noopener">Progressively Optimized Local Radiance Fields for Robust View Synthesis</a><span class="by">A. Meuleman, Y.-L. Liu, C. Gao, J.-B. Huang, C. Kim, M. H. Kim, J. Kopf. CVPR 2023.</span></span></li>
+      <li><span class="rk">i3DGS</span><span><a href="https://repo-sam.inria.fr/nerphys/i3dgs/" target="_blank" rel="noopener">Immediate 3D Gaussian Splat Reconstruction of Unordered Input with Global Consistency</a><span class="by">A. Meuleman, L. Franke, B. Zhestiankin, C. Montemagni, G. Drettakis. SIGGRAPH 2026.</span></span></li>
+      <li><span class="rk">On-the-fly NVS<span class="ds">CityWalk</span></span><span><a href="https://repo-sam.inria.fr/nerphys/on-the-fly-nvs/" target="_blank" rel="noopener">On-the-fly Reconstruction for Large-Scale Novel View Synthesis from Unposed Images</a><span class="by">A. Meuleman, I. Shah, A. Lanvin, B. Kerbl, G. Drettakis. ACM TOG 2025.</span></span></li>
+      <li><span class="rk">GLOMAP</span><span><a href="https://lpanaf.github.io/eccv24_glomap/" target="_blank" rel="noopener">Global Structure-from-Motion Revisited</a><span class="by">L. Pan, D. Baráth, M. Pollefeys, J. L. Schönberger. ECCV 2024.</span></span></li>
+      <li><span class="rk">Octree-GS</span><span><a href="https://city-super.github.io/octree-gs/" target="_blank" rel="noopener">Octree-GS: Towards Consistent Real-Time Rendering with LOD-Structured 3D Gaussians</a><span class="by">K. Ren, L. Jiang, T. Lu, M. Yu, L. Xu, Z. Ni, B. Dai. TPAMI 2025.</span></span></li>
+      <li><span class="rk">COLMAP</span><span><a href="https://colmap.github.io/" target="_blank" rel="noopener">Structure-from-Motion Revisited</a><span class="by">J. L. Schönberger, J.-M. Frahm. CVPR 2016.</span></span></li>
+      <li><span class="rk">TUM RGB-D</span><span><a href="https://cvg.cit.tum.de/data/datasets/rgbd-dataset" target="_blank" rel="noopener">A Benchmark for the Evaluation of RGB-D SLAM Systems</a><span class="by">J. Sturm, N. Engelhard, F. Endres, W. Burgard, D. Cremers. IROS 2012.</span></span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="alt" id="bibtex">
+  <div class="wrap">
+    <div class="bibhead"><h2>BibTeX</h2><button type="button" class="copy" id="copy-bib">Copy</button></div>
+    <pre class="bibtex" id="bib">@inproceedings{franke2027hibs,
+  title     = {Hierarchical Incremental Beta Splatting for Online Reconstruction},
+  author    = {Franke, Linus},
+  booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+  year      = {2027}
+}</pre>
+  </div>
+</section>
+
+<footer class="wrap">
+    LLMs were used to assist in writing and editing the text, as well as creating the visual elements. The authors take full responsibility for the content.
+</footer>
+
+<script>
+// ---------------------------------------------------------------- helpers
+const $ = s => document.querySelector(s);
+function pills(host, items, onPick, initial){
+  host.innerHTML = "";
+  items.forEach(([key, label]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = label; b.dataset.key = key;
+    b.setAttribute("aria-pressed", key === initial ? "true" : "false");
+    b.onclick = () => { host.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); onPick(key); };
+    host.appendChild(b);
+  });
+}
+const visible = new Set();
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function swapVideo(v, src, poster, keepTime){
+  const t = v.currentTime;
+  v.poster = poster; v.dataset.src = src; v.src = src; v.load();
+  v.addEventListener("loadedmetadata", () => {
+    if (keepTime){ try { v.currentTime = Math.min(t, (v.duration || t) - .05); } catch(e){} }
+    if (visible.has(v) && !v.dataset.userPaused && !reduce) v.play().catch(() => {});
+  }, {once:true});
+}
+
+// ---------------------------------------------------------------- live reconstruction
+const RECON = {
+  garden:      ["Garden", "real time", "MipNeRF360 Garden, two capture orbits. New regions appear yellow and turn purple once later views confirm them."],
+  bonsai:      ["Bonsai", "real time", "MipNeRF360 Bonsai, indoor 360° capture."],
+  university2: ["University", "4× speed", "StaticHikes University, walking capture."],
+  tum_office:  ["TUM office", "8× speed", "TUM fr3/long-office, handheld video."],
+};
+pills($("#recon-pills"), Object.entries(RECON).map(([k, v]) => [k, v[0]]), k => {
+  $("#recon-speed").textContent = RECON[k][1]; $("#recon-cap").textContent = RECON[k][2];
+  swapVideo($("#recon-vid"), `media/recon_${k}.mp4`, `media/recon_${k}.jpg`, false);
+}, "garden");
+$("#recon-cap").textContent = RECON.garden[2];
+
+// ---------------------------------------------------------------- video comparisons
+const BASE = {i3dgs:"i3DGS", otf_nvs:"On-the-fly NVS", beta:"Beta-Splatting", fastergs:"Faster-GS"};
+const ALL = ["i3dgs", "otf_nvs", "beta", "fastergs"];
+const CMP = [
+  ["bonsai_spiral", "Bonsai", "MipNeRF360 Bonsai (otf), orbit.", "i3dgs", ALL],
+  ["counter_spiral", "Counter", "MipNeRF360 Counter (otf), orbit.", "i3dgs", ALL],
+  ["univ2_traj", "University", "StaticHikes University, walking capture. The offline references degrade on this trajectory.", "beta", ALL],
+  ["forest2_traj", "Forest", "StaticHikes Forest, dense vegetation.", "fastergs", ALL],
+];
+let cmpScene = CMP[0][0], cmpBase = CMP[0][3];
+function cmpLoad(keep){
+  $("#cmp-tag").textContent = BASE[cmpBase];
+  swapVideo($("#cmp-vid"), `media/cmp_${cmpScene}_${cmpBase}.mp4`, `media/cmp_${cmpScene}_${cmpBase}.jpg`, keep);
+}
+function cmpBases(){
+  const c = CMP.find(x => x[0] === cmpScene);
+  pills($("#cmp-bases"), c[4].map(k => [k, BASE[k]]), k => { cmpBase = k; cmpLoad(true); }, cmpBase);
+}
+pills($("#cmp-scenes"), CMP.map(c => [c[0], c[1]]), k => {
+  const c = CMP.find(x => x[0] === k); cmpScene = k; cmpBase = c[3];
+  $("#cmp-cap").textContent = c[2]; cmpBases(); cmpLoad(false);
+}, cmpScene);
+cmpBases();
+$("#cmp-cap").textContent = CMP[0][2];
+$("#cmp-tag").textContent = BASE[cmpBase];
+$("#cmp-vid").dataset.src = `media/cmp_${cmpScene}_${cmpBase}.mp4`;
+$("#cmp-vid").poster = `media/cmp_${cmpScene}_${cmpBase}.jpg`;
+
+
+// ---------------------------------------------------------------- image slider
+const SL = {
+  otf: {name:"On-the-fly protocol", bases:{i3dgs:"i3DGS", otf_nvs:"On-the-fly NVS", gt:"Ground truth"},
+        scenes:[["counter","Counter",1400,933],["garden","Garden",1297,840],["forest2","Forest",1280,720],
+                ["university2","University",1280,720],["tum_office","TUM office",640,480],["tum_desk","TUM desk",640,480]]},
+  gs:  {name:"3DGS benchmark", bases:{i3dgs:"i3DGS", beta:"Beta-Splatting 7K", fastergs:"Faster-GS 7K", gt:"Ground truth"},
+        scenes:[["truck","Truck",979,546],["train","Train",980,545],["room","Room",1400,933],
+                ["kitchen","Kitchen",1400,934],["bonsai","Bonsai",1400,933],["flowers","Flowers",1256,828]]},
+};
+let slSet = "otf", slScene = "counter", slBase = "i3dgs";
+function slShow(){
+  const sc = SL[slSet].scenes.find(s => s[0] === slScene);
+  const under = $("#sl-under");
+  under.width = sc[2]; under.height = sc[3];
+  under.src = `media/stills/${slScene}_${slBase}.jpg`;
+  $("#sl-over").src = `media/stills/${slScene}_ours.jpg`;
+  under.alt = `${sc[1]}: ${SL[slSet].bases[slBase]}`;
+  $("#sl-over").alt = `${sc[1]}: ours`;
+  $("#sl-tag").textContent = SL[slSet].bases[slBase];
+  $("#sl-wrap").classList.toggle("narrow", sc[2] <= 700);
+}
+function slScenes(){
+  pills($("#sl-scenes"), SL[slSet].scenes.map(s => [s[0], s[1]]), k => { slScene = k; slShow(); }, slScene);
+  pills($("#sl-bases"), Object.entries(SL[slSet].bases), k => { slBase = k; slShow(); }, slBase);
+}
+pills($("#sl-sets"), Object.entries(SL).map(([k, v]) => [k, v.name]), k => {
+  slSet = k; slScene = SL[k].scenes[0][0]; slBase = "i3dgs"; slScenes(); slShow();
+}, slSet);
+slScenes(); slShow();
+$("#sl-range").addEventListener("input", e => $("#slider").style.setProperty("--x", e.target.value + "%"));
+// preload the other comparisons of the visible scene on first interaction
+$("#slider").addEventListener("pointerenter", () => {
+  Object.keys(SL[slSet].bases).forEach(b => { const i = new Image(); i.src = `media/stills/${slScene}_${b}.jpg`; });
+});
+
+// ---------------------------------------------------------------- tables
+document.querySelectorAll("#tbl-tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#tbl-tabs button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  document.querySelectorAll("#results .panel").forEach(p => p.hidden = p.id !== b.dataset.panel);
+});
+
+// ---------------------------------------------------------------- bibtex copy
+$("#copy-bib").onclick = () => {
+  const btn = $("#copy-bib"), txt = $("#bib").textContent;
+  const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents($("#bib"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected, press Ctrl+C"; };
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
+};
+
+// ---------------------------------------------------------------- lazy-load, autoplay in view, pause buttons
+const io = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target;
+  if (e.isIntersecting){
+    visible.add(v);
+    if (v.dataset.src && !v.getAttribute("src")){ v.src = v.dataset.src; v.load(); }
+    if (!reduce && !v.dataset.userPaused) v.play().catch(() => {});
+  } else {
+    visible.delete(v);
+    v.pause();
+  }
+}), {rootMargin:"250px"});
+const ICON_PAUSE = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1h3v10H2zm5 0h3v10H7z"/></svg>';
+const ICON_PLAY = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1l8.5 5-8.5 5z"/></svg>';
+document.querySelectorAll("video").forEach(v => {
+  io.observe(v);
+  if (reduce){ v.controls = true; return; }   // reduced motion: no autoplay, native controls instead
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "pp";
+  const show = () => {
+    const paused = !!v.dataset.userPaused;
+    b.innerHTML = paused ? ICON_PLAY : ICON_PAUSE;
+    b.setAttribute("aria-label", paused ? "Play video" : "Pause video");
+  };
+  b.onclick = () => {
+    if (v.dataset.userPaused){ delete v.dataset.userPaused; v.play().catch(() => {}); }
+    else { v.dataset.userPaused = "1"; v.pause(); }
+    show();
+  };
+  show();
+  v.parentElement.appendChild(b);
+});
+</script>
 </body>
 </html>
