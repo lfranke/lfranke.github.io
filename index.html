@@ -80,6 +80,53 @@
             style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
             <tbody>
 
+          <!-- HIBS -->
+          <tr onmouseout="hibs_stop()" onmouseover="hibs_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <div class="two" id="hibs_video" style="transition: opacity 0.4s">
+                  <video  width=100% height=100% muted autoplay loop>
+                    <source src="images/hibs_teaser.mp4" type="video/mp4">Your browser does not support the video tag.
+                  </video></div>
+                <img src="images/hibs_teaser.jpg" id="hibs_image" width="160" style="transition: opacity 0.4s">
+              </div>
+              <script type="text/javascript">
+                function hibs_start() {
+                  document.getElementById("hibs_image").style.opacity = "0";
+                  document.getElementById("hibs_video").style.opacity = "1";
+                }
+
+                function hibs_stop() {
+                  document.getElementById("hibs_video").style.opacity = "0";
+                  document.getElementById("hibs_image").style.opacity = "1";
+                }
+                hibs_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://linus-franke.com/hibs/">
+                <span class="papertitle">Hierarchical Incremental Beta Splatting for Online Reconstruction</span>
+              </a>
+              <br>
+              <strong>Linus Franke</strong>
+              <br>
+              <em>WACV</em>, 2027
+              <br>
+              <a href="https://linus-franke.com/hibs/">project page</a>
+              /
+              <a href="https://arxiv.org/abs/2611.08288">paper</a>
+              /
+              <a href="https://github.com/lfranke/hibs">code</a>
+              /
+              <a href="https://youtu.be/6AVpzSpsCBU">video</a>
+              <p></p>
+              <p>
+                Online radiance-field reconstruction from an RGB image stream, using beta kernels with shape as confidence and a hierarchy for city-sized captures.
+              </p>
+            </td>
+          </tr>
+
+
       <!-- Compact Neural Appearance Models --> 
             <tr onmouseout="cnam_stop()" onmouseover="cnam_start()">
             <td style="padding:20px;width:25%;vertical-align:middle">
@@ -1248,8 +1295,9 @@
                     Current courses taught.
                   </p>
                   <ul>
-                    <li><strong>Asset Development</strong> &mdash; SS26, details on wuecampus.</li>
-                    <li><strong>Game Labs III</strong> &mdash; SS26, details on wuecampus.</li>
+                    <li><strong>Advanced Computer Graphics</strong> &mdash; Winter Term, details on wuecampus.</li>
+                    <li><strong>Game Labs III</strong> &mdash; Winter Term and Summer Term, details on wuecampus.</li>
+                    <li><strong>Asset Development</strong> &mdash; Summer Term, details on wuecampus.</li>
                   </ul>
                 </td>
               </tr>
